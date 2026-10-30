@@ -1,0 +1,24 @@
+# Flutter
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+pubspec.lock
+*.iml
+.idea/
+.vscode/
+
+# Plataformas geradas no CI por `flutter create`
+/windows/
+/linux/
+/android/
+/macos/
+/ios/
+/web/
+
+# Conteúdo extraído dos livros do usuário: NUNCA versionar
+data/
+*.sqlite
+tools/dbbuild/work/
+tools/dbbuild/out/
