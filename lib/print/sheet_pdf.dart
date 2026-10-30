@@ -2,6 +2,7 @@
 // página 1 = atributos, defesa, resistências, ataques e perícias;
 // página 2 = equipamento, posses, carga, dinheiro, talentos, habilidades,
 // idiomas e magias; páginas extras = lista de magias e anotações.
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -92,6 +93,7 @@ Future<Uint8List> buildSheetPdf(Sheet s) async {
   );
   final classes = s.classLevels.entries.map((e) => '${s.classDefs[e.key]?.displayName(Lang.isPt) ?? e.key} ${e.value}').join(' / ');
   final race = s.race?.displayName(Lang.isPt) ?? ch.raceId;
+  final portrait = _decodePortrait(ch.portrait);
 
   // ------------------------------------------------------------------ página 1
   pw.Widget abilities() => pw.Column(crossAxisAlignment: pw.CrossAxisAlignment.start, children: [
@@ -374,6 +376,14 @@ Future<Uint8List> buildSheetPdf(Sheet s) async {
           ]),
         ),
         pw.SizedBox(width: 8),
+        if (portrait != null)
+          pw.Container(
+            width: 52,
+            height: 64,
+            margin: const pw.EdgeInsets.only(right: 6),
+            decoration: pw.BoxDecoration(border: pw.Border.all(color: _ink, width: 0.8)),
+            child: pw.Image(portrait, fit: pw.BoxFit.cover),
+          ),
         pw.Column(children: [
           pw.Text('DUNGEONS & DRAGONS 3.5', style: pw.TextStyle(font: fonts.title, fontSize: 11)),
           pw.Text(tr('FICHA DE PERSONAGEM', 'CHARACTER RECORD SHEET'), style: const pw.TextStyle(fontSize: 7, letterSpacing: 1.5)),
@@ -619,6 +629,15 @@ Future<Uint8List> buildSheetPdf(Sheet s) async {
     ));
   }
   return doc.save();
+}
+
+pw.MemoryImage? _decodePortrait(String? b64) {
+  if (b64 == null || b64.isEmpty) return null;
+  try {
+    return pw.MemoryImage(base64Decode(b64));
+  } catch (_) {
+    return null;
+  }
 }
 
 String _attackSeq(int bab) {

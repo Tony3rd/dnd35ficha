@@ -7,6 +7,7 @@ import 'package:sqlite3/sqlite3.dart';
 
 import '../engine/defs.dart';
 import '../engine/ruleset.dart';
+import '../i18n.dart';
 import 'homebrew.dart';
 
 class BookInfo {
@@ -56,10 +57,21 @@ class Library {
     }
   }
 
+  bool _hasPt = false;
+  String get _ptCols => _hasPt ? 'e.name_pt,e.summary_pt' : "'' AS name_pt,'' AS summary_pt";
+  String get _ptCols2 => _hasPt ? 'name_pt,summary_pt' : "'' AS name_pt,'' AS summary_pt";
+
   void _loadBooks() {
     _books.removeWhere((k, v) => !v.homebrew);
     final db = _db;
     if (db == null) return;
+    _hasPt = db.select('PRAGMA table_info(entries)').any((r) => r['name'] == 'name_pt');
+    _ptNames.clear();
+    if (_hasPt) {
+      for (final r in db.select("SELECT key, name_pt FROM entries WHERE name_pt <> '' GROUP BY key")) {
+        _ptNames[r['key'] as String] = r['name_pt'] as String;
+      }
+    }
     final counts = <String, int>{};
     for (final r in db.select('SELECT book, COUNT(*) AS n FROM entries GROUP BY book')) {
       counts[r['book'] as String] = r['n'] as int;
@@ -127,7 +139,26 @@ class Library {
     return toks.join(' ');
   }
 
+  /// Nomes em português por chave (kind:slug), para listas que guardam só o nome original.
+  final Map<String, String> _ptNames = {};
+  String ptName(String kind, String name) => _ptNames['$kind:${slugify(name)}'] ?? '';
+  String labelOf(String kind, String name) {
+    final pt = ptName(kind, name);
+    return Lang.isPt && pt.isNotEmpty && pt != name ? '$pt ($name)' : name;
+  }
+
+  static String? _s(Row r, String c) {
+    try {
+      return r[c] as String?;
+    } catch (_) {
+      return null;
+    }
+  }
+
   LibEntry _row(Row r, {bool withBody = false}) => LibEntry(
+        namePt: _s(r, 'name_pt') ?? '',
+        summaryPt: _s(r, 'summary_pt') ?? '',
+        bodyPt: withBody ? (_s(r, 'body_pt') ?? '') : '',
         uid: 'db:${r['id']}',
         kind: r['kind'] as String,
         name: r['name'] as String,
@@ -163,17 +194,22 @@ class Library {
       final where = <String>[];
       String sql;
       if (q.isEmpty) {
-        sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary FROM entries e';
+        sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary,$_ptCols FROM entries e';
       } else {
-        sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary FROM entries_fts f JOIN entries e ON e.id=f.rowid';
+        sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary,$_ptCols FROM entries_fts f JOIN entries e ON e.id=f.rowid';
         where.add('entries_fts MATCH ?');
         params.add(_fts(q));
       }
       if (kinds != null && kinds.isNotEmpty) where.add(_inList('e.kind', kinds, params));
       if (books != null && books.isNotEmpty) where.add(_inList('e.book', books, params));
       if (where.isNotEmpty) sql += ' WHERE ${where.join(' AND ')}';
-      sql += q.isEmpty ? ' ORDER BY e.name' : ' ORDER BY (lower(e.name)=lower(?)) DESC, bm25(entries_fts, 10.0, 2.0, 1.0)';
-      if (q.isNotEmpty) params.add(q);
+      sql += q.isEmpty ? ' ORDER BY e.name' : (_hasPt
+          ? ' ORDER BY (lower(e.name)=lower(?) OR lower(e.name_pt)=lower(?)) DESC, bm25(entries_fts, 10.0, 2.0, 1.0, 10.0, 2.0, 1.0)'
+          : ' ORDER BY (lower(e.name)=lower(?)) DESC, bm25(entries_fts, 10.0, 2.0, 1.0)');
+      if (q.isNotEmpty) {
+        params.add(q);
+        if (_hasPt) params.add(q);
+      }
       sql += ' LIMIT $limit';
       try {
         for (final r in db.select(sql, params)) {
@@ -220,8 +256,8 @@ class Library {
     final db = _db;
     if (db == null) return [];
     final rows = kind == null
-        ? db.select('SELECT id,kind,name,book,page,summary FROM entries WHERE book=? ORDER BY kind, name', [book])
-        : db.select('SELECT id,kind,name,book,page,summary FROM entries WHERE book=? AND kind=? ORDER BY name', [book, kind]);
+        ? db.select('SELECT id,kind,name,book,page,summary,$_ptCols2 FROM entries WHERE book=? ORDER BY kind, name', [book])
+        : db.select('SELECT id,kind,name,book,page,summary,$_ptCols2 FROM entries WHERE book=? AND kind=? ORDER BY name', [book, kind]);
     return rows.map((r) => _row(r)).toList();
   }
 
@@ -274,7 +310,7 @@ class Library {
     final db = _db;
     if (db != null) {
       final params = <Object?>[kind];
-      var sql = 'SELECT ${withData ? '*' : 'id,kind,name,book,page,summary'} FROM entries WHERE kind=?';
+      var sql = 'SELECT ${withData ? '*' : 'id,kind,name,book,page,summary,$_ptCols2'} FROM entries WHERE kind=?';
       if (books != null && books.isNotEmpty) sql += ' AND ${_inList('book', books, params)}';
       sql += ' ORDER BY name';
       out.addAll(db.select(sql, params).map((r) => _row(r, withBody: withData)));

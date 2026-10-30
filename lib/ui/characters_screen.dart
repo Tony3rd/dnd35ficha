@@ -7,6 +7,7 @@ import '../i18n.dart';
 import '../model/character.dart';
 import '../model/xml_io.dart';
 import 'character_screen.dart';
+import 'portrait.dart';
 import 'widgets.dart';
 import 'wizard.dart';
 
@@ -86,7 +87,7 @@ class CharactersScreen extends StatelessWidget {
                 for (final f in app.characters)
                   Card(
                     child: ListTile(
-                      leading: CircleAvatar(child: Text(f.name.isEmpty ? '?' : f.name.characters.first.toUpperCase())),
+                      leading: PortraitAvatar(portrait: f.portrait, name: f.name, radius: 24),
                       title: Text(f.name),
                       subtitle: Text(f.summary),
                       onTap: () => _open(context, f.path),

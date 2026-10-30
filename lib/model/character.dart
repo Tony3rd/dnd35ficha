@@ -200,6 +200,8 @@ class Character {
   String background;
   String notes;
   String languages;
+  /// Retrato/desenho do personagem: PNG em base64 (null = sem imagem).
+  String? portrait;
 
   // Fontes
   /// null = todos os livros; caso contrário, abreviações permitidas.
@@ -270,6 +272,7 @@ class Character {
     this.background = '',
     this.notes = '',
     this.languages = '',
+    this.portrait,
     this.allowedBooks,
     this.versionPolicy = 'ask',
     Map<String, String>? versionChoices,

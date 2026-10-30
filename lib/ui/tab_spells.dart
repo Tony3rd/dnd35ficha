@@ -174,7 +174,7 @@ class _LevelBlock extends StatelessWidget {
         Wrap(spacing: 6, runSpacing: 4, children: [
           for (final k in known)
             InputChip(
-              label: Text('${k.name}${k.book != null ? ' (${k.book})' : ''}'),
+              label: Text('${app.library.labelOf('spell', k.name)}${k.book != null ? ' · ${k.book}' : ''}'),
               onPressed: () {
                 final vs = app.library.versionsOf('spell', k.name);
                 if (vs.isNotEmpty) showEntry(context, vs.firstWhere((v) => v.book == k.book, orElse: () => vs.first));
@@ -198,7 +198,7 @@ class _LevelBlock extends StatelessWidget {
           Wrap(spacing: 6, runSpacing: 4, children: [
             for (final p in prepared)
               FilterChip(
-                label: Text('${p.name}${p.domain ? ' (D)' : ''}${p.metamagic.isNotEmpty ? ' [${p.metamagic}]' : ''}',
+                label: Text('${app.library.labelOf('spell', p.name)}${p.domain ? ' (D)' : ''}${p.metamagic.isNotEmpty ? ' [${p.metamagic}]' : ''}',
                     style: TextStyle(decoration: p.used ? TextDecoration.lineThrough : null)),
                 selected: p.used,
                 tooltip: tr('Marcar como conjurada', 'Mark as cast'),

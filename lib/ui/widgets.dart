@@ -173,7 +173,7 @@ Future<LibEntry?> chooseVersion(BuildContext context, List<LibEntry> versions, {
       content: SizedBox(
         width: 560,
         child: ListView(shrinkWrap: true, children: [
-          Text(tr('"${versions.first.name}" aparece em ${versions.length} livros. Qual versão usar?',
+          Text(tr('"${versions.first.label}" aparece em ${versions.length} livros. Qual versão usar?',
               '"${versions.first.name}" appears in ${versions.length} books. Which version?')),
           const SizedBox(height: 8),
           for (final v in versions)
@@ -184,7 +184,7 @@ Future<LibEntry?> chooseVersion(BuildContext context, List<LibEntry> versions, {
                     [
                       if (app.library.book(v.book)?.released != null && app.library.book(v.book)!.released > 0)
                         '${app.library.book(v.book)!.released ~/ 100}',
-                      if (v.summary.isNotEmpty) v.summary,
+                      if (v.shownSummary.isNotEmpty) v.shownSummary,
                       if (v.body.isNotEmpty) v.body.length > 220 ? '${v.body.substring(0, 220)}…' : v.body,
                     ].join(' — '),
                     maxLines: 4,
@@ -209,30 +209,67 @@ Future<void> showEntry(BuildContext context, LibEntry e) {
   final app = context.read<AppState>();
   final full = app.library.full(e) ?? e;
   final others = app.library.appearances(full.kind, full.name);
-  return showDialog(
-    context: context,
-    builder: (c) => AlertDialog(
-      title: Text(full.name),
+  return showDialog(context: context, builder: (c) => _EntryDialog(full: full, others: others));
+}
+
+class _EntryDialog extends StatefulWidget {
+  final LibEntry full;
+  final List<LibEntry> others;
+  const _EntryDialog({required this.full, required this.others});
+  @override
+  State<_EntryDialog> createState() => _EntryDialogState();
+}
+
+class _EntryDialogState extends State<_EntryDialog> {
+  late bool pt = Lang.isPt && (widget.full.bodyPt.isNotEmpty || widget.full.summaryPt.isNotEmpty);
+
+  @override
+  Widget build(BuildContext context) {
+    final app = context.read<AppState>();
+    final full = widget.full;
+    final hasPt = full.bodyPt.isNotEmpty || full.summaryPt.isNotEmpty;
+    final summary = pt && full.summaryPt.isNotEmpty ? full.summaryPt : full.summary;
+    final body = pt && full.bodyPt.isNotEmpty ? full.bodyPt : full.body;
+    final pageText = body.isEmpty && full.page != null ? app.library.pageText(full.book, full.page!) : '';
+    return AlertDialog(
+      title: Text(full.label),
       content: SizedBox(
         width: 640,
         child: SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Wrap(spacing: 6, runSpacing: 4, children: [
+            Wrap(spacing: 6, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
               Chip(label: Text(kindName(full.kind))),
-              Chip(label: Text('${app.library.book(full.book)?.title ?? full.book} · ${full.page != null ? 'p. ${full.page}' : ''}')),
+              Chip(label: Text('${app.library.book(full.book)?.title ?? full.book}${full.page != null ? ' · p. ${full.page}' : ''}')),
               if (full.homebrew) const Chip(label: Text('homebrew')),
+              if (hasPt)
+                SegmentedButton<bool>(
+                  segments: const [
+                    ButtonSegment(value: true, label: Text('Português')),
+                    ButtonSegment(value: false, label: Text('Original')),
+                  ],
+                  selected: {pt},
+                  onSelectionChanged: (v) => setState(() => pt = v.first),
+                ),
             ]),
-            if (full.summary.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: Text(full.summary, style: const TextStyle(fontStyle: FontStyle.italic))),
-            if (full.body.isNotEmpty) Padding(padding: const EdgeInsets.only(top: 8), child: SelectableText(full.body)),
-            if (full.body.isEmpty && full.page != null && app.library.pageText(full.book, full.page!).isNotEmpty) ...[
+            if (pt && full.summaryPt.isNotEmpty && full.bodyPt.isEmpty && full.body.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(tr('Texto completo ainda não traduzido — veja o original.', 'Full text not translated yet.'),
+                    style: Theme.of(context).textTheme.bodySmall),
+              ),
+            if (summary.isNotEmpty)
+              Padding(padding: const EdgeInsets.only(top: 8), child: Text(summary, style: const TextStyle(fontStyle: FontStyle.italic))),
+            if (body.isNotEmpty && !(pt && full.bodyPt.isEmpty))
+              Padding(padding: const EdgeInsets.only(top: 8), child: SelectableText(body)),
+            if (pageText.isNotEmpty) ...[
               const SizedBox(height: 8),
               Text(tr('Texto da página:', 'Page text:'), style: const TextStyle(fontWeight: FontWeight.bold)),
-              SelectableText(app.library.pageText(full.book, full.page!)),
+              SelectableText(pageText),
             ],
-            if (others.length > 1) ...[
+            if (widget.others.length > 1) ...[
               const SizedBox(height: 12),
               Text(tr('Também aparece em:', 'Also appears in:'), style: const TextStyle(fontWeight: FontWeight.bold)),
-              for (final o in others.where((o) => o.book != full.book || o.page != full.page))
+              for (final o in widget.others.where((o) => o.book != full.book || o.page != full.page))
                 Text('• ${app.library.book(o.book)?.title ?? o.book} (${o.sourceLabel})'),
             ],
           ]),
@@ -240,12 +277,12 @@ Future<void> showEntry(BuildContext context, LibEntry e) {
       ),
       actions: [
         TextButton(
-            onPressed: () => Clipboard.setData(ClipboardData(text: '${full.name} (${full.sourceLabel})\n${full.summary}\n${full.body}')),
+            onPressed: () => Clipboard.setData(ClipboardData(text: '${full.label} (${full.sourceLabel})\n$summary\n$body')),
             child: Text(tr('Copiar', 'Copy'))),
-        FilledButton(onPressed: () => Navigator.pop(c), child: Text(tr('Fechar', 'Close'))),
+        FilledButton(onPressed: () => Navigator.pop(context), child: Text(tr('Fechar', 'Close'))),
       ],
-    ),
-  );
+    );
+  }
 }
 
 /// Campo de busca + lista para escolher uma entrada da biblioteca.
@@ -272,7 +309,10 @@ class _PickEntryDialogState extends State<_PickEntryDialog> {
     List<LibEntry> items;
     if (widget.fixed != null) {
       final ql = q.toLowerCase();
-      items = widget.fixed!.where((e) => ql.isEmpty || e.name.toLowerCase().contains(ql) || e.summary.toLowerCase().contains(ql)).toList();
+      items = widget.fixed!
+          .where((e) => ql.isEmpty || e.name.toLowerCase().contains(ql) || e.namePt.toLowerCase().contains(ql) ||
+              e.summary.toLowerCase().contains(ql) || e.summaryPt.toLowerCase().contains(ql))
+          .toList();
     } else {
       items = app.library.search(q, kinds: widget.kinds, books: widget.books, limit: 200);
     }
@@ -306,9 +346,9 @@ class _PickEntryDialogState extends State<_PickEntryDialog> {
                       final n = items.where((x) => x.key == e.key).length;
                       return ListTile(
                         dense: true,
-                        title: Text(e.name),
+                        title: Text(e.label),
                         subtitle: Text('${e.sourceLabel}${n > 1 ? tr(' · +${n - 1} versão(ões)', ' · +${n - 1} version(s)') : ''}'
-                            '${e.summary.isNotEmpty ? ' — ${e.summary}' : ''}',
+                            '${e.shownSummary.isNotEmpty ? ' — ${e.shownSummary}' : ''}',
                             maxLines: 2, overflow: TextOverflow.ellipsis),
                         trailing: IconButton(icon: const Icon(Icons.info_outline), onPressed: () => showEntry(context, e)),
                         onTap: () => Navigator.pop(context, e),

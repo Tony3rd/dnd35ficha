@@ -106,9 +106,9 @@ class _SearchViewState extends State<_SearchView> {
             ListTile(
               dense: true,
               leading: CircleAvatar(radius: 14, child: Text(kindName(g.first.kind).characters.first, style: const TextStyle(fontSize: 12))),
-              title: Text(g.first.name),
+              title: Text(g.first.label),
               subtitle: Text('${kindName(g.first.kind)} · ${g.map((e) => e.sourceLabel).join(' · ')}'
-                  '${g.first.summary.isNotEmpty ? '\n${g.first.summary}' : ''}',
+                  '${g.first.shownSummary.isNotEmpty ? '\n${g.first.shownSummary}' : ''}',
                   maxLines: 3, overflow: TextOverflow.ellipsis),
               onTap: () async {
                 var e = g.first;
@@ -257,7 +257,10 @@ class _BookContentsScreenState extends State<BookContentsScreen> {
     final lib = app.library;
     final info = lib.book(widget.bookId);
     final counts = lib.kindCounts(widget.bookId);
-    var entries = lib.entriesOfBook(widget.bookId, kind: kind).where((e) => f.isEmpty || e.name.toLowerCase().contains(f)).toList();
+    var entries = lib
+        .entriesOfBook(widget.bookId, kind: kind)
+        .where((e) => f.isEmpty || e.name.toLowerCase().contains(f) || e.namePt.toLowerCase().contains(f))
+        .toList();
     if (byPage) entries.sort((a, b) => (a.page ?? 0).compareTo(b.page ?? 0));
     return Scaffold(
       appBar: AppBar(title: Text(info?.title ?? widget.bookId)),
@@ -284,8 +287,8 @@ class _BookContentsScreenState extends State<BookContentsScreen> {
               final e = entries[i];
               return ListTile(
                 dense: true,
-                title: Text(e.name),
-                subtitle: Text('${kindName(e.kind)}${e.page != null ? ' · p. ${e.page}' : ''}${e.summary.isNotEmpty ? ' — ${e.summary}' : ''}',
+                title: Text(e.label),
+                subtitle: Text('${kindName(e.kind)}${e.page != null ? ' · p. ${e.page}' : ''}${e.shownSummary.isNotEmpty ? ' — ${e.shownSummary}' : ''}',
                     maxLines: 2, overflow: TextOverflow.ellipsis),
                 onTap: () => showEntry(context, e),
               );

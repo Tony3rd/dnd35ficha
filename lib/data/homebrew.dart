@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:xml/xml.dart';
 
 import '../engine/defs.dart';
+import '../i18n.dart';
 import '../model/character.dart' show newId;
 
 const bookRoot = 'grimorio35-book';
@@ -24,6 +25,8 @@ class LibEntry {
   /// Dados estruturados (mesmo esquema do core.json): permite ao motor usar o item.
   Map<String, dynamic> data;
   bool homebrew;
+  /// Tradução para o português (quando existir na base).
+  String namePt, summaryPt, bodyPt;
 
   LibEntry({
     String? uid,
@@ -35,10 +38,17 @@ class LibEntry {
     this.body = '',
     Map<String, dynamic>? data,
     this.homebrew = false,
+    this.namePt = '',
+    this.summaryPt = '',
+    this.bodyPt = '',
   })  : uid = uid ?? newId(),
         data = data ?? {};
 
   String get key => '$kind:${slugify(name)}';
+
+  /// Nome para exibição: em português com o original entre parênteses.
+  String get label => Lang.isPt && namePt.isNotEmpty && namePt != name ? '$namePt ($name)' : name;
+  String get shownSummary => Lang.isPt && summaryPt.isNotEmpty ? summaryPt : summary;
   String get sourceLabel => page == null ? book : '$book p.$page';
 }
 

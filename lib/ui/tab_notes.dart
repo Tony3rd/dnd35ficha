@@ -5,6 +5,7 @@ import '../app_state.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'books_selector.dart';
+import 'portrait.dart';
 import 'widgets.dart';
 
 const alignmentCodes = ['LG', 'NG', 'CG', 'LN', 'N', 'CN', 'LE', 'NE', 'CE'];
@@ -71,7 +72,13 @@ class NotesTab extends StatelessWidget {
         );
     return ListView(padding: const EdgeInsets.all(12), children: [
       SectionTitle(tr('Identidade', 'Identity')),
-      IdentityFields(ch: ch, update: (fn) => c.update(fn)),
+      Wrap(spacing: 16, runSpacing: 12, crossAxisAlignment: WrapCrossAlignment.start, children: [
+        PortraitField(portrait: ch.portrait, onChanged: (v) => c.update((x) => x.portrait = v)),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 760),
+          child: IdentityFields(ch: ch, update: (fn) => c.update(fn)),
+        ),
+      ]),
       SectionTitle(tr('Livros usados nesta ficha', 'Books used by this character')),
       BooksSelector(
         selected: ch.allowedBooks,

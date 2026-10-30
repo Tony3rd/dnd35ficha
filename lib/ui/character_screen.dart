@@ -5,6 +5,7 @@ import '../app_state.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import '../print/sheet_pdf.dart';
+import 'portrait.dart';
 import 'tab_effects.dart';
 import 'tab_feats.dart';
 import 'tab_inventory.dart';
@@ -57,9 +58,16 @@ class _CharacterScreenState extends State<CharacterScreen> {
           final s = c.sheet;
           return Scaffold(
             appBar: AppBar(
-              title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(c.ch.name.isEmpty ? tr('(sem nome)', '(unnamed)') : c.ch.name),
-                Text(context.read<AppState>().summaryOf(c.ch), style: Theme.of(context).textTheme.labelSmall),
+              title: Row(children: [
+                PortraitAvatar(portrait: c.ch.portrait, name: c.ch.name, radius: 20),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Text(c.ch.name.isEmpty ? tr('(sem nome)', '(unnamed)') : c.ch.name, overflow: TextOverflow.ellipsis),
+                    Text(context.read<AppState>().summaryOf(c.ch),
+                        style: Theme.of(context).textTheme.labelSmall, overflow: TextOverflow.ellipsis),
+                  ]),
+                ),
               ]),
               actions: [
                 IconButton(

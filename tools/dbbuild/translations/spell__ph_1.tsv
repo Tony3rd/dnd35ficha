@@ -1,0 +1,304 @@
+Acid Fog	Névoa Ácida	A névoa causa dano por ácido.
+Acid Splash	Respingo Ácido	Orbe causa 1d3 de dano por ácido.
+Aid	Auxílio	+1 nas jogadas de ataque, +1 nos testes de resistência contra medo, 1d8 PV temporários +1/nível (máx. +10).
+Air Walk	Caminhar no Ar	O alvo pisa no ar como se fosse sólido (sobe em ângulo de 45°).
+Alarm	Alarme	Protege uma área por 2 horas/nível.
+Align Weapon	Alinhar Arma	A arma torna-se boa, má, ordeira ou caótica.
+Alter Self	Alterar-se	Assume a forma de uma criatura semelhante.
+Analyze Dweomer	Analisar Encantamento	Revela os aspectos mágicos do alvo.
+Animal Growth	Crescimento Animal	Um animal a cada dois níveis dobra de tamanho.
+Animal Messenger	Mensageiro Animal	Envia um animal Miúdo a um lugar específico.
+Animal Shapes	Formas Animais	Um aliado por nível se transforma no animal escolhido.
+Animal Trance	Transe Animal	Fascina 2d6 DV de animais.
+Animate Dead	Animar Mortos	Cria esqueletos e zumbis.
+Animate Objects	Animar Objetos	Objetos atacam seus inimigos.
+Animate Plants	Animar Plantas	Uma ou mais árvores ganham vida e lutam por você.
+Animate Rope	Animar Corda	Faz uma corda se mover sob seu comando.
+Antilife Shell	Escudo Antivida	Campo de 3 m de raio repele criaturas vivas.
+Antimagic Field	Campo Antimagia	Anula a magia a até 3 m.
+Antipathy	Antipatia	Objeto ou local afetado repele certas criaturas.
+Antiplant Shell	Escudo Antiplantas	Mantém plantas animadas afastadas.
+Arcane Eye	Olho Arcano	Olho flutuante invisível que se move 9 m por rodada.
+Arcane Lock	Tranca Arcana	Tranca magicamente uma porta ou baú.
+Arcane Sight	Visão Arcana	Auras mágicas se tornam visíveis para você.
+Arcane Sight, Greater	Visão Arcana Maior	Como Visão Arcana, mas também revela efeitos mágicos em criaturas e objetos.
+Astral Projection	Projeção Astral	Projeta você e seus companheiros no Plano Astral.
+Atonement	Penitência	Remove o peso dos erros do alvo.
+Augury	Augúrio	Descobre se uma ação será boa ou ruim.
+Awaken	Despertar	Animal ou árvore ganha intelecto humano.
+Baleful Polymorph	Metamorfose Funesta	Transforma o alvo em um animal inofensivo.
+Bane	Perdição	Inimigos sofrem –1 nas jogadas de ataque e nos testes de resistência contra medo.
+Banishment	Banimento	Bane 2 DV/nível de criaturas extraplanares.
+Barkskin	Pele de Árvore	Concede +2 (ou mais) de melhoria na armadura natural.
+Bear’s Endurance	Vigor do Urso	O alvo recebe +4 de Constituição por 1 minuto/nível.
+Bear’s Endurance, Mass	Vigor do Urso em Massa	Como Vigor do Urso, afeta um alvo por nível.
+Bestow Curse	Rogar Maldição	–6 em um atributo; ou –4 em ataques, resistências e perícias; ou 50% de chance de perder cada ação.
+Bigby’s Clenched Fist	Punho Cerrado de Bigby	Mão Grande fornece cobertura, empurra ou ataca seus inimigos.
+Bigby’s Crushing Hand	Mão Esmagadora de Bigby	Mão Grande fornece cobertura, empurra ou esmaga seus inimigos.
+Bigby’s Forceful Hand	Mão Poderosa de Bigby	A mão empurra criaturas para longe.
+Bigby’s Grasping Hand	Mão Agarradora de Bigby	A mão fornece cobertura, empurra ou agarra.
+Bigby’s Interposing Hand	Mão Interposta de Bigby	A mão fornece cobertura contra um oponente.
+Binding	Aprisionar	Utiliza diversas técnicas para aprisionar uma criatura.
+Blade Barrier	Barreira de Lâminas	Muralha de lâminas causa 1d6/nível de dano.
+Blasphemy	Blasfêmia	Mata, paralisa, enfraquece ou atordoa alvos não malignos.
+Bless	Bênção	Aliados recebem +1 de moral nos ataques e nas resistências contra medo.
+Bless Water	Abençoar Água	Cria água benta.
+Bless Weapon	Abençoar Arma	A arma acerta em cheio inimigos malignos.
+Blight	Praga	Seca uma planta ou causa 1d6/nível de dano a uma criatura vegetal.
+Blindness/Deafness	Cegueira/Surdez	Deixa o alvo cego ou surdo.
+Blink	Piscar	Você desaparece e reaparece aleatoriamente por 1 rodada/nível.
+Blur	Nublar	Ataques erram o alvo 20% das vezes.
+Break Enchantment	Quebrar Encantamento	Liberta o alvo de encantamentos, alterações, maldições e petrificação.
+Bull’s Strength	Força do Touro	O alvo recebe +4 de Força por 1 minuto/nível.
+Bull’s Strength, Mass	Força do Touro em Massa	Como Força do Touro, afeta um alvo por nível.
+Burning Hands	Mãos Flamejantes	1d4/nível de dano por fogo (máx. 5d4).
+Call Lightning	Convocar Relâmpagos	Invoca relâmpagos do céu (3d6 por relâmpago).
+Call Lightning Storm	Tempestade de Relâmpagos	Como Convocar Relâmpagos, mas 5d6 de dano por relâmpago.
+Calm Animals	Acalmar Animais	Acalma (2d4 + nível) DV de animais.
+Calm Emotions	Acalmar Emoções	Acalma criaturas, anulando efeitos de emoção.
+Cat’s Grace	Agilidade do Gato	O alvo recebe +4 de Destreza por 1 minuto/nível.
+Cat’s Grace, Mass	Agilidade do Gato em Massa	Como Agilidade do Gato, afeta um alvo por nível.
+Cause Fear	Causar Medo	Uma criatura de até 5 DV foge por 1d4 rodadas.
+Chain Lightning	Relâmpago em Cadeia	1d6/nível de dano; 1 raio secundário por nível, cada um causa metade do dano.
+Changestaff	Cajado Transformado	Seu cajado se torna um ente sob comando.
+Chaos Hammer	Martelo do Caos	Causa dano e torna lentas criaturas ordeiras.
+Charm Animal	Enfeitiçar Animal	Torna um animal seu amigo.
+Charm Monster	Enfeitiçar Monstro	Faz um monstro acreditar que é seu aliado.
+Charm Person	Enfeitiçar Pessoa	Torna uma pessoa sua amiga.
+Chill Metal	Congelar Metal	Metal gelado causa dano a quem o toca.
+Chill Touch	Toque Arrepiante	1 toque/nível causa 1d6 de dano e possivelmente 1 de dano de Força.
+Circle of Death	Círculo da Morte	Mata 1d4 DV/nível de criaturas.
+Clairaudience/Clairvoyance	Clariaudiência/Clarividência	Ouve ou vê à distância por 1 minuto/nível.
+Cloak of Chaos	Manto do Caos	+4 na CA, +4 de resistência, RM 25 contra magias ordeiras.
+Clone	Clone	Uma duplicata desperta quando o original morre.
+Cloudkill	Névoa Mortal	Mata até 3 DV; 4–6 DV: resistir ou morrer; 6+ DV sofrem dano de Constituição.
+Color Spray	Leque Cromático	Deixa inconscientes, cegas ou atordoadas criaturas fracas.
+Command	Comando	Um alvo obedece ao comando escolhido por 1 rodada.
+Command Plants	Comandar Plantas	Influencia as ações de uma ou mais criaturas vegetais.
+Command Undead	Comandar Mortos-Vivos	Um morto-vivo obedece às suas ordens.
+Command, Greater	Comando Maior	Como Comando, mas afeta um alvo por nível.
+Commune	Comunhão	A divindade responde uma pergunta de sim ou não por nível.
+Commune with Nature	Comunhão com a Natureza	Aprende sobre o terreno num raio de 1,5 km/nível.
+Comprehend Languages	Compreender Idiomas	Você entende todos os idiomas falados e escritos.
+Cone of Cold	Cone Glacial	1d6/nível de dano por frio (máx. 15d6).
+Confusion	Confusão	O alvo age de modo estranho por 1 rodada/nível.
+Confusion, Lesser	Confusão Menor	Uma criatura age aleatoriamente por 1 rodada.
+Consecrate	Consagrar	Enche a área de energia positiva, enfraquecendo mortos-vivos.
+Contact Other Plane	Contato Extraplanar	Permite fazer perguntas a uma entidade extraplanar.
+Contagion	Contágio	Infecta o alvo com a doença escolhida.
+Contingency	Contingência	Define uma condição para disparar outra magia.
+Continual Flame	Chama Contínua	Cria uma tocha permanente que não esquenta.
+Control Plants	Controlar Plantas	Controla as ações de uma ou mais criaturas vegetais.
+Control Undead	Controlar Mortos-Vivos	Mortos-vivos não o atacam enquanto estão sob seu comando.
+Control Water	Controlar a Água	Eleva ou abaixa massas de água.
+Control Weather	Controlar o Clima	Muda o clima na região.
+Control Winds	Controlar Ventos	Muda a direção e a velocidade do vento.
+Create Food and Water	Criar Alimentos e Água	Alimenta 3 humanos (ou 1 cavalo) por nível.
+Create Greater Undead	Criar Mortos-Vivos Maiores	Cria sombras, aparições, espectros ou devoradores.
+Create Undead	Criar Mortos-Vivos	Cria carniçais, lívidos, múmias ou mohrgs.
+Create Water	Criar Água	Cria 8 litros de água pura por nível.
+Creeping Doom	Praga Rastejante	Enxames de centopeias atacam sob seu comando.
+Crushing Despair	Desespero Esmagador	Os alvos sofrem –2 em ataques, dano, resistências e testes.
+Cure Critical Wounds	Curar Ferimentos Críticos	Cura 4d8 +1/nível (máx. +20).
+Cure Critical Wounds, Mass	Curar Ferimentos Críticos em Massa	Cura 4d8 +1/nível (máx. +40) de várias criaturas.
+Cure Light Wounds	Curar Ferimentos Leves	Cura 1d8 +1/nível de dano (máx. +5).
+Cure Light Wounds, Mass	Curar Ferimentos Leves em Massa	Cura 1d8 +1/nível de dano de várias criaturas.
+Cure Minor Wounds	Curar Ferimentos Mínimos	Cura 1 ponto de dano.
+Cure Moderate Wounds	Curar Ferimentos Moderados	Cura 2d8 +1/nível de dano (máx. +10).
+Cure Moderate Wounds, Mass	Curar Ferimentos Moderados em Massa	Cura 2d8 +1/nível de dano de várias criaturas.
+Cure Serious Wounds	Curar Ferimentos Graves	Cura 3d8 +1/nível de dano (máx. +15).
+Cure Serious Wounds, Mass	Curar Ferimentos Graves em Massa	Cura 3d8 +1/nível de dano de várias criaturas.
+Curse Water	Amaldiçoar Água	Cria água profana.
+Dancing Lights	Luzes Dançantes	Cria tochas ou outras luzes.
+Darkness	Escuridão	Sombra sobrenatural em raio de 6 m.
+Darkvision	Visão no Escuro	Enxerga a 18 m na escuridão total.
+Daylight	Luz do Dia	Luz intensa em raio de 18 m.
+Daze	Atordoar	Humanoide de até 4 DV perde a próxima ação.
+Daze Monster	Atordoar Monstro	Criatura viva de até 6 DV perde a próxima ação.
+Death Knell	Toque da Morte	Mata uma criatura moribunda; você ganha 1d8 PV temporários, +2 de Força e +1 nível de conjurador.
+Death Ward	Proteção contra a Morte	Concede imunidade a magias de morte e efeitos de energia negativa.
+Deathwatch	Vigília da Morte	Revela quão perto da morte estão os alvos a até 9 m.
+Deep Slumber	Sono Profundo	Põe para dormir 10 DV de criaturas.
+Deeper Darkness	Escuridão Profunda	Objeto emite sombra sobrenatural em raio de 18 m.
+Delay Poison	Retardar Envenenamento	Impede que o veneno afete o alvo por 1 hora/nível.
+Delayed Blast Fireball	Bola de Fogo Controlável	1d6/nível de dano por fogo; você pode adiar a explosão por até 5 rodadas.
+Demand	Exigência	Como Recado, mas também pode enviar uma Sugestão.
+Desecrate	Profanar	Enche a área de energia negativa, fortalecendo mortos-vivos.
+Destruction	Destruição	Mata o alvo e destrói os restos.
+Detect Animals or Plants	Detectar Animais ou Plantas	Detecta espécies de animais ou plantas.
+Detect Chaos	Detectar o Caos	Revela criaturas, magias ou objetos caóticos.
+Detect Evil	Detectar o Mal	Revela criaturas, magias ou objetos malignos.
+Detect Good	Detectar o Bem	Revela criaturas, magias ou objetos bondosos.
+Detect Law	Detectar a Ordem	Revela criaturas, magias ou objetos ordeiros.
+Detect Magic	Detectar Magia	Detecta magias e itens mágicos a até 18 m.
+Detect Poison	Detectar Venenos	Detecta veneno em uma criatura ou objeto pequeno.
+Detect Scrying	Detectar Observação	Alerta sobre espionagem mágica.
+Detect Secret Doors	Detectar Portas Secretas	Revela portas ocultas a até 18 m.
+Detect Snares and Pits	Detectar Armadilhas e Fossos	Revela armadilhas naturais ou primitivas.
+Detect Thoughts	Detectar Pensamentos	Permite "ouvir" pensamentos superficiais.
+Detect Undead	Detectar Mortos-Vivos	Revela mortos-vivos a até 18 m.
+Dictum	Palavra da Ordem	Mata, paralisa, torna lentos ou ensurdece alvos não ordeiros.
+Dimension Door	Porta Dimensional	Teleporta você a uma curta distância.
+Dimensional Anchor	Âncora Dimensional	Impede movimento extradimensional.
+Dimensional Lock	Tranca Dimensional	Bloqueia teletransporte e viagem planar por 1 dia/nível.
+Diminish Plants	Diminuir Plantas	Reduz o tamanho ou atrofia o crescimento de plantas normais.
+Discern Lies	Discernir Mentiras	Revela falsidades deliberadas.
+Discern Location	Discernir Localização	Revela a localização exata de uma criatura ou objeto.
+Disguise Self	Disfarçar-se	Muda a sua aparência.
+Disintegrate	Desintegrar	Faz uma criatura ou objeto desaparecer.
+Dismissal	Expulsão	Força uma criatura a voltar ao seu plano natal.
+Dispel Chaos	Dissipar o Caos	+4 contra ataques de criaturas caóticas.
+Dispel Evil	Dissipar o Mal	+4 contra ataques de criaturas malignas.
+Dispel Good	Dissipar o Bem	+4 contra ataques de criaturas bondosas.
+Dispel Law	Dissipar a Ordem	+4 contra ataques de criaturas ordeiras.
+Dispel Magic	Dissipar Magia	Cancela magias e efeitos mágicos.
+Dispel Magic, Greater	Dissipar Magia Maior	Como Dissipar Magia, mas até +20 no teste.
+Displacement	Deslocamento	Ataques erram o alvo 50% das vezes.
+Disrupt Undead	Romper Morto-Vivo	Causa 1d6 de dano a um morto-vivo.
+Disrupting Weapon	Arma Desmanteladora	Arma de combate corpo a corpo destrói mortos-vivos.
+Divination	Adivinhação	Fornece conselhos úteis sobre ações específicas propostas.
+Divine Favor	Favor Divino	Você recebe +1 a cada três níveis nas jogadas de ataque e dano.
+Divine Power	Poder Divino	Você ganha bônus de ataque, +6 de Força e 1 PV/nível.
+Dominate Animal	Dominar Animal	O animal obedece a comandos mentais silenciosos.
+Dominate Monster	Dominar Monstro	Como Dominar Pessoa, mas qualquer criatura.
+Dominate Person	Dominar Pessoa	Controla um humanoide telepaticamente.
+Doom	Ruína	Um alvo sofre –2 em ataques, dano, resistências e testes.
+Drawmij’s Instant Summons	Convocação Instantânea de Drawmij	O objeto preparado aparece em sua mão.
+Dream	Sonho	Envia uma mensagem a alguém que esteja dormindo.
+Eagle’s Splendor	Esplendor da Águia	O alvo recebe +4 de Carisma por 1 minuto/nível.
+Eagle’s Splendor, Mass	Esplendor da Águia em Massa	Como Esplendor da Águia, afeta um alvo por nível.
+Earthquake	Terremoto	Tremor intenso sacode um raio de 1,5 m/nível.
+Elemental Swarm	Enxame Elemental	Invoca vários elementais.
+Endure Elements	Suportar Elementos	Permite ficar confortável em ambientes quentes ou frios.
+Energy Drain	Drenar Energia	O alvo ganha 2d4 níveis negativos.
+Enervation	Enervação	O alvo ganha 1d4 níveis negativos.
+Enlarge Person	Aumentar Pessoa	Uma criatura humanoide dobra de tamanho.
+Enlarge Person, Mass	Aumentar Pessoa em Massa	Aumenta várias criaturas.
+Entangle	Constrição	Plantas enredam todos num raio de 12 m.
+Enthrall	Cativar	Cativa todos a até 30 m + 3 m/nível.
+Entropic Shield	Escudo Entrópico	Ataques à distância contra você têm 20% de chance de erro.
+Erase	Apagar	Escrita comum ou mágica desaparece.
+Ethereal Jaunt	Passeio Etéreo	Você se torna etéreo por 1 rodada/nível.
+Etherealness	Forma Etérea	Viaja ao Plano Etéreo com companheiros.
+Evard’s Black Tentacles	Tentáculos Negros de Evard	Tentáculos agarram todos numa dispersão de 4,5 m.
+Expeditious Retreat	Recuo Acelerado	Seu deslocamento terrestre aumenta em 9 m.
+Explosive Runes	Runas Explosivas	Causam 6d6 de dano quando lidas.
+Eyebite	Olhar Profano	O alvo fica em pânico, enjoado e em coma.
+Fabricate	Fabricar	Transforma matéria-prima em itens prontos.
+Faerie Fire	Fogo das Fadas	Contorna os alvos com luz, anulando Nublar, camuflagem etc.
+False Life	Vitalidade Ilusória	Ganha 1d10 +1/nível (máx. +10) PV temporários.
+False Vision	Visão Falsa	Engana a observação mágica com uma ilusão.
+Fear	Medo	Os alvos no cone fogem por 1 rodada/nível.
+Feather Fall	Queda Suave	Objetos ou criaturas caem lentamente.
+Feeblemind	Debilidade Mental	A Inteligência e o Carisma do alvo caem para 1.
+Find Traps	Encontrar Armadilhas	Nota armadilhas como um ladino.
+Find the Path	Encontrar o Caminho	Mostra o caminho mais direto até um local.
+Finger of Death	Dedo da Morte	Mata um alvo.
+Fire Seeds	Sementes de Fogo	Bolotas e frutos viram granadas e bombas.
+Fire Shield	Escudo de Fogo	Quem o ataca sofre 1d6 +1/nível de dano (fogo no escudo quente, frio no escudo gélido); você fica protegido do elemento oposto.
+Fire Storm	Tempestade de Fogo	Causa 1d6/nível de dano por fogo.
+Fire Trap	Armadilha de Fogo	Objeto aberto causa 1d4 +1/nível de dano por fogo.
+Fireball	Bola de Fogo	1d6/nível de dano por fogo, raio de 6 m.
+Flame Arrow	Flecha Flamejante	Flechas causam +1d6 de dano por fogo.
+Flame Blade	Lâmina Flamejante	Ataque de toque causa 1d8 +1 a cada 2 níveis de dano.
+Flame Strike	Coluna de Chamas	Atinge os inimigos com fogo divino (1d6/nível).
+Flaming Sphere	Esfera Flamejante	Cria uma bola de fogo que causa 2d6 de dano e dura 1 rodada/nível.
+Flare	Clarão	Ofusca uma criatura (–1 nas jogadas de ataque).
+Flesh to Stone	Carne em Pedra	Transforma o alvo em uma estátua.
+Fly	Voo	O alvo voa com deslocamento de 18 m.
+Fog Cloud	Névoa	A neblina obscurece a visão.
+Forbiddance	Proibição	Bloqueia viagem planar e causa dano a criaturas de outra tendência.
+Forcecage	Jaula de Energia	Cubo ou jaula de energia aprisiona quem estiver dentro.
+Foresight	Presciência	"Sexto sentido" avisa sobre perigos iminentes.
+Fox’s Cunning	Astúcia da Raposa	O alvo recebe +4 de Inteligência por 1 minuto/nível.
+Fox’s Cunning, Mass	Astúcia da Raposa em Massa	Como Astúcia da Raposa, afeta um alvo por nível.
+Freedom	Liberdade	Liberta uma criatura afetada pela magia Prisão.
+Freedom of Movement	Movimentação Livre	O alvo se move normalmente apesar de impedimentos.
+Gaseous Form	Forma Gasosa	O alvo se torna insubstancial e pode voar lentamente.
+Gate	Portal	Conecta dois planos para viagem ou convocação.
+Geas, Lesser	Missão Menor	Ordena que um alvo de até 7 DV cumpra uma tarefa.
+Geas/Quest	Missão/Demanda	Como Missão Menor, mas afeta qualquer criatura.
+Gentle Repose	Repouso Tranquilo	Preserva um cadáver.
+Ghost Sound	Som Fantasma	Sons ilusórios.
+Ghoul Touch	Toque do Carniçal	Paralisa um alvo, que exala um fedor que enjoa quem estiver perto.
+Giant Vermin	Insetos Gigantes	Transforma centopeias, escorpiões ou aranhas em vermes gigantes.
+Glibness	Lábia	Você recebe +30 em Blefar e suas mentiras escapam da detecção mágica.
+Glitterdust	Poeira Ofuscante	Cega criaturas e contorna criaturas invisíveis.
+Globe of Invulnerability	Globo de Invulnerabilidade	Como Globo de Invulnerabilidade Menor, mais efeitos de magias de 4º nível.
+Globe of Invulnerability, Lesser	Globo de Invulnerabilidade Menor	Bloqueia efeitos de magias de 1º a 3º nível.
+Glyph of Warding	Símbolo de Proteção	A inscrição fere quem passar por ela.
+Glyph of Warding, Greater	Símbolo de Proteção Maior	Como Símbolo de Proteção, mas até 10d8 de dano ou uma magia de 6º nível.
+Good Hope	Boa Esperança	Os alvos recebem +2 em ataques, dano, resistências e testes.
+Goodberry	Bom Fruto	2d4 frutos que curam 1 PV cada (máx. 8 PV a cada 24 horas).
+Grease	Área Escorregadia	Torna escorregadio um quadrado de 3 m ou 1 objeto.
+Guards and Wards	Guardiões e Proteções	Um conjunto de efeitos mágicos protege a área.
+Guidance	Orientação	+1 em uma jogada de ataque, teste de resistência ou de perícia.
+Gust of Wind	Lufada de Vento	Arrasta ou derruba criaturas pequenas.
+Hallow	Santificar	Torna o local sagrado.
+Hallucinatory Terrain	Terreno Ilusório	Faz um tipo de terreno parecer outro (campo em floresta etc.).
+Halt Undead	Imobilizar Mortos-Vivos	Imobiliza mortos-vivos por 1 rodada/nível.
+Harm	Infligir Dano	Causa 10 PV de dano por nível ao alvo.
+Haste	Velocidade	Uma criatura por nível se move mais rápido e recebe +1 nos ataques, na CA e nos testes de Reflexos.
+Heal	Cura Completa	Cura 10 pontos por nível, todas as doenças e condições mentais.
+Heal Mount	Curar Montaria	Como Cura Completa, mas na montaria especial.
+Heal, Mass	Cura Completa em Massa	Como Cura Completa, mas em vários alvos.
+Heat Metal	Esquentar Metal	Esquenta o metal a ponto de ferir quem o toca.
+Helping Hand	Mão Amiga	Uma mão fantasmagórica conduz o alvo até você.
+Heroes’ Feast	Banquete dos Heróis	Alimenta uma criatura por nível, cura e concede bônus de combate.
+Heroism	Heroísmo	Concede +2 nos ataques, resistências e testes de perícia.
+Heroism, Greater	Heroísmo Maior	Concede +4 nos ataques, resistências e perícias, imunidade a medo e PV temporários.
+Hide from Animals	Esconder-se dos Animais	Animais não percebem um alvo por nível.
+Hide from Undead	Esconder-se dos Mortos-Vivos	Mortos-vivos não percebem um alvo por nível.
+Hold Animal	Imobilizar Animal	Paralisa um animal por 1 rodada/nível.
+Hold Monster	Imobilizar Monstro	Como Imobilizar Pessoa, mas afeta qualquer criatura.
+Hold Monster, Mass	Imobilizar Monstro em Massa	Como Imobilizar Monstro, mas todos a até 9 m.
+Hold Person	Imobilizar Pessoa	Paralisa uma pessoa por até 1 rodada/nível.
+Hold Person, Mass	Imobilizar Pessoa em Massa	Como Imobilizar Pessoa, mas todos a até 9 m.
+Hold Portal	Fechar Portas	Mantém uma porta fechada.
+Holy Aura	Aura Sagrada	+4 na CA, +4 de resistência, RM 25 contra magias malignas.
+Holy Smite	Destruição Sagrada	Causa dano e cega criaturas malignas.
+Holy Sword	Espada Sagrada	A arma se torna +5 e causa +2d6 de dano contra o mal.
+Holy Word	Palavra Sagrada	Mata, paralisa, cega ou ensurdece alvos não bondosos.
+Horrid Wilting	Murchar Terrível	Causa 1d6/nível de dano a até 9 m.
+Hypnotic Pattern	Padrão Hipnótico	Fascina (2d4 + nível) DV de criaturas.
+Hypnotism	Hipnotismo	Fascina 2d4 DV de criaturas.
+Ice Storm	Tempestade Glacial	Granizo causa 5d6 de dano num cilindro de 12 m de diâmetro.
+Identify	Identificação	Determina as propriedades de um item mágico.
+Illusory Script	Escrita Ilusória	Apenas o leitor pretendido consegue decifrar.
+Illusory Wall	Muralha Ilusória	Parede, piso ou teto parece real, mas tudo o atravessa.
+Imbue with Spell Ability	Imbuir Habilidade Mágica	Transfere magias para o alvo.
+Implosion	Implosão	Mata uma criatura por rodada.
+Imprisonment	Prisão	Encerra o alvo sob a terra.
+Incendiary Cloud	Nuvem Incendiária	A nuvem causa 4d6 de dano por fogo por rodada.
+Inflict Critical Wounds	Infligir Ferimentos Críticos	Ataque de toque, 4d8 +1/nível (máx. +20).
+Inflict Critical Wounds, Mass	Infligir Ferimentos Críticos em Massa	Causa 4d8 +1/nível de dano em várias criaturas.
+Inflict Light Wounds	Infligir Ferimentos Leves	O toque causa 1d8 +1/nível de dano (máx. +5).
+Inflict Light Wounds, Mass	Infligir Ferimentos Leves em Massa	Causa 1d8 +1/nível de dano em várias criaturas.
+Inflict Minor Wounds	Infligir Ferimentos Mínimos	Ataque de toque, 1 ponto de dano.
+Inflict Moderate Wounds	Infligir Ferimentos Moderados	Ataque de toque, 2d8 +1/nível (máx. +10).
+Inflict Moderate Wounds, Mass	Infligir Ferimentos Moderados em Massa	Causa 2d8 +1/nível de dano em várias criaturas.
+Inflict Serious Wounds	Infligir Ferimentos Graves	Ataque de toque, 3d8 +1/nível (máx. +15).
+Inflict Serious Wounds, Mass	Infligir Ferimentos Graves em Massa	Causa 3d8 +1/nível de dano em várias criaturas.
+Insanity	Insanidade	O alvo sofre Confusão contínua.
+Insect Plague	Praga de Insetos	Enxames de gafanhotos atacam criaturas.
+Invisibility	Invisibilidade	O alvo fica invisível por 1 minuto/nível ou até atacar.
+Invisibility Purge	Expurgar Invisibilidade	Dissipa a invisibilidade a até 1,5 m/nível.
+Invisibility Sphere	Esfera de Invisibilidade	Torna invisíveis todos a até 3 m.
+Invisibility, Greater	Invisibilidade Maior	Como Invisibilidade, mas o alvo pode atacar e continuar invisível.
+Invisibility, Mass	Invisibilidade em Massa	Como Invisibilidade, mas afeta todos no alcance.
+Iron Body	Corpo de Ferro	Seu corpo se torna ferro vivo.
+Ironwood	Madeira de Ferro	Madeira mágica tão resistente quanto o aço.
+Jump	Salto	O alvo recebe bônus em testes de Saltar.
+Keen Edge	Lâmina Afiada	Dobra a margem de ameaça de uma arma.
+Knock	Arrombar	Abre uma porta trancada ou selada magicamente.
+Know Direction	Saber a Direção	Você sabe onde fica o norte.
+Legend Lore	Lendas e Histórias	Permite conhecer histórias sobre uma pessoa, lugar ou coisa.
+Leomund’s Secret Chest	Baú Secreto de Leomund	Esconde um baú caro no Plano Etéreo; você o recupera quando quiser.
+Leomund’s Secure Shelter	Abrigo Seguro de Leomund	Cria um chalé resistente.
+Leomund’s Tiny Hut	Pequena Cabana de Leomund	Cria um abrigo para dez criaturas.
+Leomund’s Trap	Armadilha de Leomund	Faz um item parecer armado com uma armadilha.
+Levitate	Levitação	O alvo sobe e desce sob seu comando.
+Light	Luz	O objeto brilha como uma tocha.
+Lightning Bolt	Relâmpago	Eletricidade causa 1d6/nível de dano.
+Limited Wish	Desejo Restrito	Altera a realidade dentro dos limites da magia.
+Liveoak	Carvalho Vivo	Transforma um carvalho em guardião ente.

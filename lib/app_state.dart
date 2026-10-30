@@ -21,7 +21,8 @@ class CharacterFile {
   final String name;
   final String summary;
   final DateTime modified;
-  CharacterFile(this.path, this.name, this.summary, this.modified);
+  final String? portrait;
+  CharacterFile(this.path, this.name, this.summary, this.modified, [this.portrait]);
 }
 
 class AppState extends ChangeNotifier {
@@ -103,7 +104,7 @@ class AppState extends ChangeNotifier {
         try {
           final c = characterFromXml(await f.readAsString());
           out.add(CharacterFile(f.path, c.name.isEmpty ? p.basenameWithoutExtension(f.path) : c.name, summaryOf(c),
-              await f.lastModified()));
+              await f.lastModified(), c.portrait));
         } catch (_) {
           out.add(CharacterFile(f.path, p.basename(f.path), tr('arquivo inválido', 'invalid file'), DateTime(2000)));
         }

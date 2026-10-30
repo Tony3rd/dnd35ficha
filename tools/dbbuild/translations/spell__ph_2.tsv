@@ -1,0 +1,296 @@
+Locate Creature	Localizar Criatura	Indica a direção de uma criatura conhecida.
+Locate Object	Localizar Objeto	Sente a direção de um objeto (específico ou tipo).
+Longstrider	Passos Largos	Aumenta o seu deslocamento.
+Lullaby	Canção de Ninar	Deixa o alvo sonolento: –5 em Observar e Ouvir, –2 em Vontade contra Sono.
+Mage Armor	Armadura Arcana	Concede ao alvo +4 de bônus de armadura.
+Mage Hand	Mãos Mágicas	Telecinesia de 2,5 kg.
+Magic Circle against Chaos	Círculo Mágico contra o Caos	Como Proteção contra o Caos, mas raio de 3 m e 10 minutos/nível.
+Magic Circle against Evil	Círculo Mágico contra o Mal	Como Proteção contra o Mal, mas raio de 3 m e 10 minutos/nível.
+Magic Circle against Good	Círculo Mágico contra o Bem	Como Proteção contra o Bem, mas raio de 3 m e 10 minutos/nível.
+Magic Circle against Law	Círculo Mágico contra a Ordem	Como Proteção contra a Ordem, mas raio de 3 m e 10 minutos/nível.
+Magic Fang	Presa Mágica	Uma arma natural do alvo recebe +1 no ataque e no dano.
+Magic Fang, Greater	Presa Mágica Maior	Uma arma natural recebe +1 a cada três níveis no ataque e no dano (ou todas recebem +1).
+Magic Jar	Recipiente Arcano	Permite possuir outra criatura.
+Magic Missile	Mísseis Mágicos	1d4+1 de dano de energia; +1 míssil a cada dois níveis acima do 1º (máx. 5).
+Magic Mouth	Boca Encantada	Fala uma vez quando ativada.
+Magic Vestment	Vestimenta Mágica	Armadura, escudo ou roupa recebe +1 de melhoria a cada quatro níveis.
+Magic Weapon	Arma Mágica	A arma recebe +1 de bônus de melhoria.
+Magic Weapon, Greater	Arma Mágica Maior	+1 a cada quatro níveis (máx. +5).
+Major Creation	Criação Maior	Como Criação Menor, mas também pedra e metal.
+Major Image	Imagem Maior	Como Imagem Silenciosa, mas com som, cheiro e efeitos térmicos.
+Make Whole	Reparar	Conserta um objeto.
+Mark of Justice	Marca da Justiça	Define uma ação que ativará uma maldição no alvo.
+Maze	Labirinto	Prende o alvo em um labirinto extradimensional.
+Meld into Stone	Mesclar-se às Rochas	Você e seu equipamento se fundem à pedra.
+Melf’s Acid Arrow	Flecha Ácida de Melf	Ataque de toque à distância; 2d4 de dano por ácido por 1 rodada +1 a cada 3 níveis (máx. 7).
+Mending	Remendar	Faz pequenos reparos em um objeto.
+Message	Mensagem	Conversa sussurrada à distância.
+Meteor Swarm	Chuva de Meteoros	Quatro esferas explodem causando 6d6 de dano por fogo cada.
+Mind Blank	Limpar a Mente	O alvo fica imune a magia mental/emocional e à observação.
+Mind Fog	Névoa Mental	Os alvos na névoa sofrem –10 em Vontade e testes de Sabedoria.
+Minor Creation	Criação Menor	Cria um objeto de tecido ou madeira.
+Minor Image	Imagem Menor	Como Imagem Silenciosa, mas com algum som.
+Miracle	Milagre	Pede a intercessão de uma divindade.
+Mirage Arcana	Miragem Arcana	Como Terreno Ilusório, mas também estruturas.
+Mirror Image	Imagem Espelhada	Cria duplicatas ilusórias suas (1d4 +1 a cada três níveis, máx. 8).
+Misdirection	Despistar	Engana adivinhações sobre uma criatura ou objeto.
+Mislead	Enganar	Torna você invisível e cria um duplo ilusório.
+Modify Memory	Modificar Memória	Altera 5 minutos das memórias do alvo.
+Moment of Prescience	Momento de Presciência	Você ganha bônus de intuição em uma jogada de ataque, teste ou resistência.
+Mordenkainen’s Disjunction	Disjunção de Mordenkainen	Dissipa magias e desencanta itens mágicos.
+Mordenkainen’s Faithful Hound	Cão Fiel de Mordenkainen	Um cão fantasma vigia e ataca.
+Mordenkainen’s Lucubration	Lucubração de Mordenkainen	Recupera uma magia de 5º nível ou menor. Somente magos.
+Mordenkainen’s Magnificent Mansion	Mansão Magnífica de Mordenkainen	Uma porta leva a uma mansão extradimensional.
+Mordenkainen’s Private Sanctum	Santuário Particular de Mordenkainen	Impede que alguém veja ou observe uma área por 24 horas.
+Mordenkainen’s Sword	Espada de Mordenkainen	Lâmina mágica flutuante ataca oponentes.
+Mount	Montaria	Invoca um cavalo de montaria por 2 horas/nível.
+Move Earth	Mover Terra	Escava valas e ergue colinas.
+Neutralize Poison	Neutralizar Venenos	Imuniza o alvo contra veneno e neutraliza toxinas.
+Nightmare	Pesadelo	Envia uma visão que causa 1d10 de dano e fadiga.
+Nondetection	Indetectável	Esconde o alvo de adivinhações e observação.
+Obscure Object	Ocultar Objeto	Protege um objeto contra observação mágica.
+Obscuring Mist	Névoa Obscurecente	Uma neblina envolve você.
+Open/Close	Abrir/Fechar	Abre ou fecha coisas pequenas ou leves.
+Order’s Wrath	Ira da Ordem	Causa dano e atordoa criaturas caóticas.
+Otiluke’s Freezing Sphere	Esfera Congelante de Otiluke	Congela a água ou causa dano por frio.
+Otiluke’s Resilient Sphere	Esfera Resiliente de Otiluke	Globo de energia protege, mas prende um alvo.
+Otiluke’s Telekinetic Sphere	Esfera Telecinética de Otiluke	Como Esfera Resiliente, mas você move a esfera telecineticamente.
+Otto’s Irresistible Dance	Dança Irresistível de Otto	Força o alvo a dançar.
+Overland Flight	Voo Prolongado	Você voa a 12 m e pode se apressar por longas distâncias.
+Owl’s Wisdom	Sabedoria da Coruja	O alvo recebe +4 de Sabedoria por 1 minuto/nível.
+Owl’s Wisdom, Mass	Sabedoria da Coruja em Massa	Como Sabedoria da Coruja, afeta um alvo por nível.
+Pass without Trace	Passos sem Pegadas	Um alvo por nível não deixa rastros nem cheiro por 1 hora/nível.
+Passwall	Criar Passagens	Abre uma passagem em paredes de madeira ou pedra.
+Permanency	Permanência	Torna certas magias permanentes.
+Permanent Image	Imagem Permanente	Inclui visão, som e cheiro.
+Persistent Image	Imagem Persistente	Como Imagem Maior, mas sem exigir concentração.
+Phantasmal Killer	Assassino Fantasmagórico	Ilusão aterrorizante mata o alvo ou causa 3d6 de dano.
+Phantom Steed	Corcel Fantasma	Um cavalo mágico aparece por 1 hora/nível.
+Phase Door	Porta em Fase	Passagem invisível através de madeira ou pedra.
+Planar Ally	Aliado Extraplanar	Como Aliado Extraplanar Menor, mas até 12 DV.
+Planar Ally, Greater	Aliado Extraplanar Maior	Como Aliado Extraplanar Menor, mas até 18 DV.
+Planar Ally, Lesser	Aliado Extraplanar Menor	Troca serviços com uma criatura extraplanar de 6 DV.
+Planar Binding	Ligação Planar	Como Ligação Planar Menor, mas até 12 DV.
+Planar Binding, Greater	Ligação Planar Maior	Como Ligação Planar Menor, mas até 18 DV.
+Planar Binding, Lesser	Ligação Planar Menor	Prende uma criatura extraplanar de até 6 DV até ela cumprir uma tarefa.
+Plane Shift	Viagem Planar	Até oito alvos viajam para outro plano.
+Plant Growth	Crescimento de Plantas	Faz a vegetação crescer e melhora colheitas.
+Poison	Envenenamento	O toque causa 1d10 de dano de Constituição, repetido após 1 minuto.
+Polar Ray	Raio Polar	Ataque de toque à distância causa 1d6/nível de dano por frio.
+Polymorph	Metamorfose	Dá uma nova forma a um alvo voluntário.
+Polymorph Any Object	Metamorfosear Objetos	Transforma qualquer coisa em qualquer outra.
+Power Word Blind	Palavra de Poder: Cegar	Cega criaturas com até 200 PV.
+Power Word Kill	Palavra de Poder: Matar	Mata uma criatura com até 100 PV.
+Power Word Stun	Palavra de Poder: Atordoar	Atordoa criaturas com até 150 PV.
+Prayer	Oração	Aliados recebem +1 na maioria das jogadas; inimigos sofrem –1.
+Prestidigitation	Prestidigitação	Realiza truques simples.
+Prismatic Sphere	Esfera Prismática	Como Muralha Prismática, mas envolve por todos os lados.
+Prismatic Spray	Rajada Prismática	Raios atingem os alvos com efeitos variados.
+Prismatic Wall	Muralha Prismática	As cores da muralha têm efeitos diversos.
+Produce Flame	Criar Chamas	1d6 +1/nível de dano, ao toque ou arremessada.
+Programmed Image	Imagem Programada	Como Imagem Maior, mas ativada por um evento.
+Project Image	Projetar Imagem	Um duplo ilusório pode falar e conjurar magias.
+Protection from Arrows	Proteção contra Flechas	O alvo fica imune à maioria dos ataques à distância.
+Protection from Chaos	Proteção contra o Caos	+2 na CA e nas resistências contra o caos, bloqueia controle mental e afasta elementais e extraplanares.
+Protection from Energy	Proteção contra Elementos	Absorve 12 pontos de dano por nível de um tipo de energia.
+Protection from Evil	Proteção contra o Mal	+2 na CA e nas resistências contra o mal, bloqueia controle mental e afasta elementais e extraplanares.
+Protection from Good	Proteção contra o Bem	+2 na CA e nas resistências contra o bem, bloqueia controle mental e afasta elementais e extraplanares.
+Protection from Law	Proteção contra a Ordem	+2 na CA e nas resistências contra a ordem, bloqueia controle mental e afasta elementais e extraplanares.
+Protection from Spells	Proteção contra Magias	Concede +8 de bônus de resistência.
+Prying Eyes	Olhos Observadores	1d4 +1/nível olhos flutuantes fazem reconhecimento para você.
+Prying Eyes, Greater	Olhos Observadores Maiores	Como Olhos Observadores, mas os olhos têm Visão da Verdade.
+Purify Food and Drink	Purificar Alimentos	Purifica 30 dm³ por nível de comida ou água.
+Pyrotechnics	Pirotecnia	Transforma fogo em luz ofuscante ou fumaça sufocante.
+Quench	Extinguir	Apaga incêndios não mágicos ou um item mágico.
+Rage	Fúria	Os alvos recebem +2 de Força e Constituição, +1 em Vontade e –2 na CA.
+Rainbow Pattern	Padrão Prismático	Luzes fascinam 24 DV de criaturas.
+Raise Dead	Reviver os Mortos	Devolve a vida a um alvo morto há até 1 dia/nível.
+Rary’s Mnemonic Enhancer	Aprimoramento Mnemônico de Rary	Prepara magias extras ou retém uma recém-conjurada.
+Rary’s Telepathic Bond	Elo Telepático de Rary	Uma ligação permite que aliados se comuniquem.
+Ray of Enfeeblement	Raio do Enfraquecimento	O raio reduz a Força em 1d6 +1 a cada 2 níveis (máx. +5).
+Ray of Exhaustion	Raio da Exaustão	O raio deixa o alvo exausto.
+Ray of Frost	Raio de Gelo	O raio causa 1d3 de dano por frio.
+Read Magic	Ler Magias	Lê pergaminhos e grimórios.
+Reduce Animal	Reduzir Animal	Encolhe um animal voluntário.
+Reduce Person	Reduzir Pessoa	Uma criatura humanoide fica com metade do tamanho.
+Reduce Person, Mass	Reduzir Pessoa em Massa	Reduz várias criaturas.
+Refuge	Refúgio	Altera um item para transportar quem o possuir até você.
+Regenerate	Regeneração	Membros decepados do alvo voltam a crescer; cura 4d8 +1/nível (máx. +35).
+Reincarnate	Reencarnação	Traz o alvo morto de volta em um corpo humanoide aleatório.
+Remove Blindness/Deafness	Remover Cegueira/Surdez	Cura condições normais ou mágicas.
+Remove Curse	Remover Maldição	Liberta uma pessoa ou objeto de uma maldição.
+Remove Disease	Remover Doenças	Cura todas as doenças que afetam o alvo.
+Remove Fear	Remover Medo	Suprime o medo ou dá +4 contra medo a um alvo +1 a cada quatro níveis.
+Remove Paralysis	Remover Paralisia	Liberta criaturas de paralisia, imobilização ou Lentidão.
+Repel Metal or Stone	Repelir Metal ou Pedra	Afasta metal e pedra.
+Repel Vermin	Repelir Insetos	Insetos, aranhas e outros vermes ficam a 3 m de distância.
+Repel Wood	Repelir Madeira	Afasta objetos de madeira.
+Repulsion	Repulsão	Criaturas não conseguem se aproximar de você.
+Resist Energy	Resistência a Elementos	Ignora os primeiros 10 (ou mais) pontos de dano por ataque de um tipo de energia.
+Resistance	Resistência	O alvo recebe +1 de bônus de resistência em todos os testes de resistência.
+Restoration	Restauração	Restaura dreno de nível e de atributo.
+Restoration, Greater	Restauração Maior	Como Restauração, mas restaura todos os níveis e atributos.
+Restoration, Lesser	Restauração Menor	Dissipa penalidades mágicas de atributo ou repara 1d4 de dano de atributo.
+Resurrection	Ressurreição	Restaura totalmente um alvo morto.
+Reverse Gravity	Inverter a Gravidade	Objetos e criaturas caem para cima.
+Righteous Might	Poder Divino Justo	Seu tamanho aumenta e você ganha bônus de combate.
+Rope Trick	Truque da Corda	Até oito criaturas se escondem num espaço extradimensional.
+Rusting Grasp	Toque da Ferrugem	Seu toque corrói ferro e ligas.
+Sanctuary	Santuário	Oponentes não podem atacá-lo e você não pode atacar.
+Scare	Amedrontar	Deixa em pânico criaturas de até 5 DV.
+Scintillating Pattern	Padrão Cintilante	Cores ondulantes confundem, atordoam ou deixam inconsciente.
+Scorching Ray	Raio Ardente	Ataque de toque à distância causa 4d6 de dano por fogo, +1 raio a cada 4 níveis (máx. 3).
+Screen	Biombo	Uma ilusão esconde a área da visão e da observação.
+Scrying	Observação	Espiona um alvo à distância.
+Scrying, Greater	Observação Maior	Como Observação, mas mais rápida e duradoura.
+Sculpt Sound	Esculpir Sons	Cria novos sons ou modifica os existentes.
+Searing Light	Luz Cegante	O raio causa 1d8 a cada dois níveis, mais contra mortos-vivos.
+Secret Page	Página Secreta	Altera uma página para esconder seu conteúdo real.
+See Invisibility	Ver o Invisível	Revela criaturas ou objetos invisíveis.
+Seeming	Semelhança	Muda a aparência de uma pessoa a cada dois níveis.
+Sending	Recado	Entrega instantaneamente uma mensagem curta a qualquer lugar.
+Sepia Snake Sigil	Símbolo da Serpente Sépia	Cria um símbolo escrito que imobiliza o leitor.
+Sequester	Isolamento	O alvo fica invisível à visão e à observação.
+Shades	Sombras	Como Conjuração das Sombras, mas até 8º nível e 80% real.
+Shadow Conjuration	Conjuração das Sombras	Imita conjurações abaixo do 4º nível, mas apenas 20% real.
+Shadow Conjuration, Greater	Conjuração das Sombras Maior	Como Conjuração das Sombras, mas até 6º nível e 60% real.
+Shadow Evocation	Evocação das Sombras	Imita evocações abaixo do 5º nível, mas apenas 20% real.
+Shadow Evocation, Greater	Evocação das Sombras Maior	Como Evocação das Sombras, mas até 7º nível e 60% real.
+Shadow Walk	Caminhar nas Sombras	Entra nas sombras para viajar rapidamente.
+Shambler	Monte Errante	Invoca 1d4+2 montes errantes para lutar por você.
+Shapechange	Metamorfose Completa	Você se transforma em qualquer criatura, uma vez por rodada.
+Shatter	Despedaçar	Vibração sônica danifica objetos ou criaturas cristalinas.
+Shield	Escudo Arcano	Disco invisível dá +4 de bônus de escudo na CA e bloqueia Mísseis Mágicos.
+Shield Other	Escudo Protetor	Você sofre metade do dano do alvo.
+Shield of Faith	Escudo da Fé	A aura concede +2 (ou mais) de bônus de deflexão.
+Shield of Law	Escudo da Ordem	+4 na CA, +4 de resistência, RM 25 contra magias caóticas.
+Shillelagh	Shillelagh	Porrete ou bordão se torna uma arma +1 por 1 minuto/nível.
+Shocking Grasp	Toque Chocante	O toque causa 1d6/nível (máx. 5d6) de dano por eletricidade.
+Shout	Grito	Ensurdece todos no cone e causa 5d6 de dano.
+Shout, Greater	Grito Maior	Grito devastador causa 10d6 de dano sônico, atordoa criaturas e danifica objetos.
+Shrink Item	Encolher Item	O objeto encolhe para 1/16 do tamanho normal.
+Silence	Silêncio	Anula o som num raio de 4,5 m.
+Silent Image	Imagem Silenciosa	Cria uma ilusão menor à sua escolha.
+Simulacrum	Simulacro	Cria um duplo parcialmente real de uma criatura.
+Slay Living	Matar os Vivos	Ataque de toque mata o alvo.
+Sleep	Sono	Põe em sono mágico 4 DV de criaturas.
+Sleet Storm	Tempestade de Granizo	Prejudica a visão e o movimento.
+Slow	Lentidão	Um alvo por nível realiza só uma ação por rodada, –1 na CA e nos ataques.
+Snare	Laço	Cria uma armadilha mágica.
+Soften Earth and Stone	Amolecer Terra e Pedra	Transforma pedra em argila ou terra em areia ou lama.
+Solid Fog	Névoa Sólida	Bloqueia a visão e torna o movimento lento.
+Song of Discord	Canção da Discórdia	Força os alvos a atacarem uns aos outros.
+Soul Bind	Prender a Alma	Aprisiona a alma de um recém-morto para impedir Ressurreição.
+Sound Burst	Explosão Sonora	Causa 1d8 de dano sônico aos alvos; pode atordoá-los.
+Speak with Animals	Falar com Animais	Você pode se comunicar com animais.
+Speak with Dead	Falar com os Mortos	O cadáver responde uma pergunta a cada dois níveis.
+Speak with Plants	Falar com Plantas	Você pode conversar com plantas e criaturas vegetais.
+Spectral Hand	Mão Espectral	Cria uma mão brilhante sem corpo que realiza ataques de toque.
+Spell Immunity	Imunidade a Magia	O alvo fica imune a uma magia a cada quatro níveis.
+Spell Immunity, Greater	Imunidade a Magia Maior	Como Imunidade a Magia, mas magias de até 8º nível.
+Spell Resistance	Resistência à Magia	O alvo recebe Resistência à Magia de 12 +1/nível.
+Spell Turning	Reflexão de Magia	Reflete 1d4+6 níveis de magias de volta ao conjurador.
+Spellstaff	Cajado Mágico	Armazena uma magia num bordão de madeira.
+Spider Climb	Patas de Aranha	Concede a capacidade de andar em paredes e tetos.
+Spike Growth	Crescimento de Espinhos	Criaturas na área sofrem 1d4 de dano e podem ficar lentas.
+Spike Stones	Pedras Afiadas	Criaturas na área sofrem 1d8 de dano e podem ficar lentas.
+Spiritual Weapon	Arma Espiritual	Uma arma mágica ataca sozinha.
+Statue	Estátua	O alvo pode virar estátua quando quiser.
+Status	Situação	Monitora a condição e a posição dos aliados.
+Stinking Cloud	Névoa Fétida	Vapores nauseantes, 1 rodada/nível.
+Stone Shape	Moldar Rochas	Molda pedra na forma desejada.
+Stone Tell	Falar com as Pedras	Conversa com pedra natural ou trabalhada.
+Stone to Flesh	Pedra em Carne	Restaura uma criatura petrificada.
+Stoneskin	Pele Rochosa	Ignora 10 pontos de dano por ataque.
+Storm of Vengeance	Tempestade da Vingança	A tempestade faz chover ácido, relâmpagos e granizo.
+Suggestion	Sugestão	Força o alvo a seguir o curso de ação indicado.
+Suggestion, Mass	Sugestão em Massa	Como Sugestão, mais um alvo por nível.
+Summon Instrument	Invocar Instrumento	Invoca um instrumento à escolha do conjurador.
+Summon Monster I	Invocar Criaturas I	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster II	Invocar Criaturas II	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster III	Invocar Criaturas III	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster IV	Invocar Criaturas IV	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster V	Invocar Criaturas V	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster VI	Invocar Criaturas VI	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster VII	Invocar Criaturas VII	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster VIII	Invocar Criaturas VIII	Invoca uma criatura extraplanar para lutar por você.
+Summon Monster IX	Invocar Criaturas IX	Invoca uma criatura extraplanar para lutar por você.
+Summon Nature’s Ally I	Convocar Aliado Natural I	Convoca uma criatura para lutar.
+Summon Nature’s Ally II	Convocar Aliado Natural II	Convoca uma criatura para lutar.
+Summon Nature’s Ally III	Convocar Aliado Natural III	Convoca uma criatura para lutar.
+Summon Nature’s Ally IV	Convocar Aliado Natural IV	Convoca uma criatura para lutar.
+Summon Nature’s Ally V	Convocar Aliado Natural V	Convoca uma criatura para lutar.
+Summon Nature’s Ally VI	Convocar Aliado Natural VI	Convoca uma criatura para lutar.
+Summon Nature’s Ally VII	Convocar Aliado Natural VII	Convoca uma criatura para lutar.
+Summon Nature’s Ally VIII	Convocar Aliado Natural VIII	Convoca uma criatura para lutar.
+Summon Nature’s Ally IX	Convocar Aliado Natural IX	Convoca uma criatura para lutar.
+Summon Swarm	Invocar Enxame	Invoca um enxame de morcegos, ratos ou aranhas.
+Sunbeam	Raio Solar	O feixe cega e causa 4d6 de dano.
+Sunburst	Explosão Solar	Cega todos a até 3 m e causa 6d6 de dano.
+Symbol of Death	Símbolo da Morte	Runa ativada mata criaturas próximas.
+Symbol of Fear	Símbolo do Medo	Runa ativada deixa em pânico criaturas próximas.
+Symbol of Insanity	Símbolo da Insanidade	Runa ativada enlouquece criaturas próximas.
+Symbol of Pain	Símbolo da Dor	Runa ativada aflige criaturas próximas com dor.
+Symbol of Persuasion	Símbolo da Persuasão	Runa ativada enfeitiça criaturas próximas.
+Symbol of Sleep	Símbolo do Sono	Runa ativada põe para dormir criaturas próximas.
+Symbol of Stunning	Símbolo do Atordoamento	Runa ativada atordoa criaturas próximas.
+Symbol of Weakness	Símbolo da Fraqueza	Runa ativada enfraquece criaturas próximas.
+Sympathetic Vibration	Vibração Simpática	Causa 2d10 de dano por rodada a uma estrutura isolada.
+Sympathy	Simpatia	Objeto ou local atrai certas criaturas.
+Tasha’s Hideous Laughter	Gargalhada Histérica de Tasha	O alvo perde ações por 1 rodada/nível.
+Telekinesis	Telecinesia	Move objetos, ataca criaturas ou arremessa objetos e criaturas.
+Teleport	Teletransporte	Transporta você instantaneamente até 160 km/nível.
+Teleport Object	Teletransportar Objeto	Como Teletransporte, mas afeta um objeto tocado.
+Teleport, Greater	Teletransporte Maior	Como Teletransporte, mas sem limite de distância nem erro de destino.
+Teleportation Circle	Círculo de Teletransporte	Círculo teletransporta qualquer criatura que entrar nele.
+Temporal Stasis	Estase Temporal	Põe o alvo em animação suspensa.
+Tenser’s Floating Disk	Disco Flutuante de Tenser	Disco horizontal de 90 cm que carrega 50 kg/nível.
+Tenser’s Transformation	Transformação de Tenser	Você ganha bônus de combate.
+Time Stop	Parar o Tempo	Você age livremente por 1d4+1 rodadas.
+Tongues	Idiomas	Fala qualquer idioma.
+Touch of Fatigue	Toque da Fadiga	Ataque de toque deixa o alvo fatigado.
+Touch of Idiocy	Toque da Idiotice	O alvo sofre 1d6 de dano de Inteligência, Sabedoria e Carisma.
+Transmute Metal to Wood	Transmutar Metal em Madeira	O metal a até 12 m vira madeira.
+Transmute Mud to Rock	Transmutar Lama em Rocha	Transforma dois cubos de 3 m por nível.
+Transmute Rock to Mud	Transmutar Rocha em Lama	Transforma dois cubos de 3 m por nível.
+Trap the Soul	Aprisionar a Alma	Aprisiona o alvo dentro de uma gema.
+Tree Shape	Forma de Árvore	Você fica idêntico a uma árvore por 1 hora/nível.
+Tree Stride	Caminhar com as Árvores	Passa de uma árvore para outra distante.
+True Resurrection	Ressurreição Verdadeira	Como Ressurreição, mas os restos mortais não são necessários.
+True Seeing	Visão da Verdade	Vê todas as coisas como realmente são.
+True Strike	Golpe Certeiro	Adiciona +20 de bônus de intuição à sua próxima jogada de ataque.
+Undeath to Death	Destruir Mortos-Vivos	Destrói 1d4 DV/nível de mortos-vivos.
+Undetectable Alignment	Tendência Indetectável	Oculta a tendência por 24 horas.
+Unhallow	Profanar Solo	Torna o local profano.
+Unholy Aura	Aura Profana	+4 na CA, +4 de resistência, RM 25 contra magias bondosas.
+Unholy Blight	Praga Profana	Causa dano e enjoa criaturas bondosas.
+Unseen Servant	Servo Invisível	Uma força invisível obedece às suas ordens.
+Vampiric Touch	Toque Vampírico	O toque causa 1d6 a cada 2 níveis; o conjurador ganha o dano como PV.
+Veil	Véu	Muda a aparência de um grupo de criaturas.
+Ventriloquism	Ventriloquismo	Projeta a voz por 1 minuto/nível.
+Virtue	Virtude	O alvo ganha 1 PV temporário.
+Vision	Visão	Como Lendas e Histórias, mas mais rápida e desgastante.
+Wail of the Banshee	Lamento da Banshee	Mata uma criatura por nível.
+Wall of Fire	Muralha de Fogo	Causa 2d4 de dano por fogo até 3 m e 1d4 até 6 m; atravessá-la causa 2d6 +1/nível.
+Wall of Force	Muralha de Energia	A muralha é imune a dano.
+Wall of Ice	Muralha de Gelo	Cria um plano de gelo com 15 PV +1/nível ou um hemisfério que prende criaturas.
+Wall of Iron	Muralha de Ferro	30 PV a cada 4 níveis; pode tombar sobre os inimigos.
+Wall of Stone	Muralha de Pedra	Cria uma muralha de pedra que pode ser moldada.
+Wall of Thorns	Muralha de Espinhos	Espinhos ferem quem tentar atravessar.
+Warp Wood	Entortar Madeira	Entorta madeira (haste, cabo, porta, prancha).
+Water Breathing	Respirar na Água	O alvo pode respirar debaixo d'água.
+Water Walk	Caminhar sobre as Águas	O alvo pisa na água como se fosse sólida.
+Waves of Exhaustion	Ondas de Exaustão	Vários alvos ficam exaustos.
+Waves of Fatigue	Ondas de Fadiga	Vários alvos ficam fatigados.
+Web	Teia	Preenche uma dispersão de 6 m de raio com teias pegajosas.
+Weird	Pesadelo Fantasmagórico	Como Assassino Fantasmagórico, mas afeta todos a até 9 m.
+Whirlwind	Turbilhão	Um ciclone causa dano e pode erguer criaturas.
+Whispering Wind	Sussurros do Vento	Envia uma mensagem curta a até 1,5 km/nível.
+Wind Walk	Caminhar no Vento	Você e seus aliados viram vapor e viajam rapidamente.
+Wind Wall	Muralha de Vento	Desvia flechas, criaturas pequenas e gases.
+Wish	Desejo	Como Desejo Restrito, mas com menos limites.
+Wood Shape	Moldar Madeira	Rearranja objetos de madeira como você desejar.
+Word of Chaos	Palavra do Caos	Mata, enlouquece, atordoa ou ensurdece alvos não caóticos.
+Word of Recall	Palavra de Retorno	Teleporta você de volta a um local designado.
+Zone of Silence	Zona de Silêncio	Impede que ouçam o que se fala a até 1,5 m de você.
+Zone of Truth	Zona da Verdade	Os alvos no alcance não conseguem mentir.

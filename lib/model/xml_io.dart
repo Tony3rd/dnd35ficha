@@ -188,6 +188,9 @@ String characterToXml(Character c) {
       'twf': _b(c.twoWeaponFighting), 'powerAttack': '${c.powerAttack}',
       'combatExpertise': '${c.combatExpertise}', 'defensive': _b(c.fightingDefensively),
     });
+    if (c.portrait != null && c.portrait!.isNotEmpty) {
+      b.element('portrait', attributes: {'mime': 'image/png'}, nest: c.portrait!);
+    }
     b.element('appearance', nest: c.appearance);
     b.element('background', nest: c.background);
     b.element('notes', nest: c.notes);
@@ -412,6 +415,8 @@ Character characterFromXml(String src) {
     c.combatExpertise = _pi(cb.getAttribute('combatExpertise'));
     c.fightingDefensively = _pb(cb.getAttribute('defensive'));
   }
+  final por = one(r, 'portrait')?.innerText.trim();
+  c.portrait = (por == null || por.isEmpty) ? null : por;
   c.appearance = one(r, 'appearance')?.innerText ?? '';
   c.background = one(r, 'background')?.innerText ?? '';
   c.notes = one(r, 'notes')?.innerText ?? '';

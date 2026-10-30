@@ -9,6 +9,7 @@ import '../engine/defs.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'books_selector.dart';
+import 'portrait.dart';
 import 'tab_feats.dart';
 import 'tab_inventory.dart';
 import 'tab_levels.dart';
@@ -89,7 +90,13 @@ class _CreationWizardState extends State<CreationWizard> {
       case 7:
         body = Consumer<CharacterController>(
             builder: (_, c, __) => ListView(padding: const EdgeInsets.all(12), children: [
-                  IdentityFields(ch: c.ch, update: (fn) => c.update(fn)),
+                  Wrap(spacing: 16, runSpacing: 12, children: [
+                    PortraitField(portrait: c.ch.portrait, onChanged: (v) => c.update((x) => x.portrait = v)),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 760),
+                      child: IdentityFields(ch: c.ch, update: (fn) => c.update(fn)),
+                    ),
+                  ]),
                 ]));
         break;
       default:
@@ -345,6 +352,27 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
 class _AbilitiesStep extends StatelessWidget {
   const _AbilitiesStep();
 
+  /// Valores do conjunto (padrão ou rolados) em ordem decrescente.
+  static List<int> _pool(Character ch) =>
+      [for (final a in abilityIds) ch.baseAbilities[a] ?? 8]..sort((a, b) => b.compareTo(a));
+
+  /// Ordem atual dos atributos: do maior valor para o menor (estável pela ordem padrão).
+  static List<String> _order(Character ch) {
+    final ids = List.of(abilityIds);
+    ids.sort((a, b) {
+      final c = (ch.baseAbilities[b] ?? 8).compareTo(ch.baseAbilities[a] ?? 8);
+      return c != 0 ? c : abilityIds.indexOf(a).compareTo(abilityIds.indexOf(b));
+    });
+    return ids;
+  }
+
+  /// Reatribui os valores: o atributo no topo recebe o maior valor, o do fundo o menor.
+  static void _assign(Character x, List<String> order, List<int> pool) {
+    for (var i = 0; i < order.length; i++) {
+      x.baseAbilities[order[i]] = pool[i];
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final c = context.watch<CharacterController>();
@@ -353,7 +381,15 @@ class _AbilitiesStep extends StatelessWidget {
     final s = c.sheet;
     int cost(int v) => rules.pointBuy[v] ?? (v < 8 ? -(8 - v) : 99);
     final spent = abilityIds.fold<int>(0, (a, k) => a + cost(ch.baseAbilities[k] ?? 8));
-    return ListView(padding: const EdgeInsets.all(12), children: [
+    final ordered = ch.abilityMethod == 'array' || ch.abilityMethod == 'roll';
+
+    Widget subtitle(String a) => Text([
+          if ((s.race?.abilityAdj[a] ?? 0) != 0) '${tr('racial', 'racial')} ${sgn(s.race!.abilityAdj[a]!)}',
+          '${tr('total', 'total')} ${s.abilities[a]!.total} (${sgn(s.abilities[a]!.mod)})',
+          if (ch.abilityMethod == 'pointbuy') '${tr('custo', 'cost')} ${cost(ch.baseAbilities[a] ?? 8)}',
+        ].join(' · '));
+
+    final header = <Widget>[
       SegmentedButton<String>(
         segments: [
           ButtonSegment(value: 'pointbuy', label: Text(tr('Compra de pontos', 'Point buy'))),
@@ -363,15 +399,15 @@ class _AbilitiesStep extends StatelessWidget {
         ],
         selected: {ch.abilityMethod},
         onSelectionChanged: (v) => c.update((x) {
+          final order = _order(x);
           x.abilityMethod = v.first;
           if (v.first == 'pointbuy') {
             for (final a in abilityIds) {
               x.baseAbilities[a] = 8;
             }
           } else if (v.first == 'array') {
-            for (var i = 0; i < 6; i++) {
-              x.baseAbilities[abilityIds[i]] = rules.eliteArray[i];
-            }
+            final pool = List.of(rules.eliteArray)..sort((a, b) => b.compareTo(a));
+            _assign(x, order, pool);
           }
         }),
       ),
@@ -390,62 +426,22 @@ class _AbilitiesStep extends StatelessWidget {
             label: Text(tr('Rolar 6× 4d6 (descarta o menor)', 'Roll 6× 4d6 drop lowest')),
             onPressed: () {
               final vals = c.app.dice.rollAbilityArray()..sort((a, b) => b.compareTo(a));
-              c.update((x) {
-                for (var i = 0; i < 6; i++) {
-                  x.baseAbilities[abilityIds[i]] = vals[i];
-                }
-              });
-              toast(context, '${tr('Resultados', 'Results')}: ${vals.join(', ')} — ${tr('use as setas para trocar', 'use arrows to swap')}');
+              c.update((x) => _assign(x, _order(x), vals));
+              toast(context, '${tr('Resultados', 'Results')}: ${vals.join(', ')}');
             },
           ),
         ),
-      const SizedBox(height: 8),
-      for (var i = 0; i < 6; i++)
-        Card(
-          child: ListTile(
-            title: Text(abilityName(abilityIds[i])),
-            subtitle: Text([
-              '${tr('base', 'base')} ${ch.baseAbilities[abilityIds[i]]}',
-              if ((s.race?.abilityAdj[abilityIds[i]] ?? 0) != 0) '${tr('racial', 'racial')} ${sgn(s.race!.abilityAdj[abilityIds[i]]!)}',
-              '= ${s.abilities[abilityIds[i]]!.total} (${sgn(s.abilities[abilityIds[i]]!.mod)})',
-              if (ch.abilityMethod == 'pointbuy') '${tr('custo', 'cost')} ${cost(ch.baseAbilities[abilityIds[i]] ?? 8)}',
-            ].join(' · ')),
-            trailing: Row(mainAxisSize: MainAxisSize.min, children: [
-              if (ch.abilityMethod == 'array' || ch.abilityMethod == 'roll') ...[
-                IconButton(
-                  tooltip: tr('Trocar com o de cima', 'Swap with above'),
-                  icon: const Icon(Icons.arrow_upward),
-                  onPressed: i == 0
-                      ? null
-                      : () => c.update((x) {
-                            final a = abilityIds[i], b = abilityIds[i - 1];
-                            final t = x.baseAbilities[a]!;
-                            x.baseAbilities[a] = x.baseAbilities[b]!;
-                            x.baseAbilities[b] = t;
-                          }),
-                ),
-                IconButton(
-                  tooltip: tr('Trocar com o de baixo', 'Swap with below'),
-                  icon: const Icon(Icons.arrow_downward),
-                  onPressed: i == 5
-                      ? null
-                      : () => c.update((x) {
-                            final a = abilityIds[i], b = abilityIds[i + 1];
-                            final t = x.baseAbilities[a]!;
-                            x.baseAbilities[a] = x.baseAbilities[b]!;
-                            x.baseAbilities[b] = t;
-                          }),
-                ),
-              ] else
-                NumStepper(
-                  value: ch.baseAbilities[abilityIds[i]] ?? 8,
-                  min: ch.abilityMethod == 'pointbuy' ? 8 : 1,
-                  max: ch.abilityMethod == 'pointbuy' ? 18 : 60,
-                  onChanged: (v) => c.update((x) => x.baseAbilities[abilityIds[i]] = v.toInt()),
-                ),
-            ]),
-          ),
+      if (ordered)
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+              tr('Arraste os atributos para ordená-los. O do topo recebe o maior valor (${_pool(ch).first}) e o do fundo o menor (${_pool(ch).last}).',
+                  'Drag abilities to order them. The top one gets the highest value (${_pool(ch).first}), the bottom one the lowest (${_pool(ch).last}).'),
+              style: Theme.of(context).textTheme.bodyMedium),
         ),
+    ];
+
+    final footer = <Widget>[
       if (ch.abilityMethod == 'pointbuy' && spent > ch.pointBuyBudget)
         Text(tr('Pontos acima do orçamento!', 'Over budget!'), style: TextStyle(color: Theme.of(context).colorScheme.error)),
       const SizedBox(height: 8),
@@ -453,6 +449,80 @@ class _AbilitiesStep extends StatelessWidget {
           tr('Aumentos de atributo dos níveis 4, 8, 12… são escolhidos na etapa de níveis. Itens e magias que aumentam atributos entram depois, como efeitos.',
               'Ability increases at levels 4, 8, 12… are chosen in the levels step. Items and spells that raise abilities are added later as effects.'),
           style: Theme.of(context).textTheme.bodySmall),
+    ];
+
+    if (ordered) {
+      final order = _order(ch);
+      final pool = _pool(ch);
+      return Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          ...header,
+          Expanded(
+            child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              // valores fixos por posição
+              Column(children: [
+                for (final v in pool)
+                  Container(
+                    height: 64,
+                    width: 56,
+                    margin: const EdgeInsets.symmetric(vertical: 2),
+                    alignment: Alignment.center,
+                    child: Text('$v', style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                  ),
+              ]),
+              Expanded(
+                child: ReorderableListView(
+                  buildDefaultDragHandles: false,
+                  onReorder: (from, to) => c.update((x) {
+                    final o = _order(x);
+                    final item = o.removeAt(from);
+                    o.insert(to > from ? to - 1 : to, item);
+                    _assign(x, o, _pool(x));
+                  }),
+                  children: [
+                    for (var i = 0; i < order.length; i++)
+                      SizedBox(
+                        key: ValueKey(order[i]),
+                        height: 68,
+                        child: Card(
+                          child: ReorderableDragStartListener(
+                            index: i,
+                            child: ListTile(
+                              leading: const Icon(Icons.drag_indicator),
+                              title: Text(abilityName(order[i]), style: const TextStyle(fontWeight: FontWeight.w600)),
+                              subtitle: subtitle(order[i]),
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ]),
+          ),
+          ...footer,
+        ]),
+      );
+    }
+
+    return ListView(padding: const EdgeInsets.all(12), children: [
+      ...header,
+      const SizedBox(height: 8),
+      for (final a in abilityIds)
+        Card(
+          child: ListTile(
+            title: Text(abilityName(a)),
+            subtitle: subtitle(a),
+            trailing: NumStepper(
+              value: ch.baseAbilities[a] ?? 8,
+              min: ch.abilityMethod == 'pointbuy' ? 8 : 1,
+              max: ch.abilityMethod == 'pointbuy' ? 18 : 60,
+              onChanged: (v) => c.update((x) => x.baseAbilities[a] = v.toInt()),
+            ),
+          ),
+        ),
+      ...footer,
     ]);
   }
 }

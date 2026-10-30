@@ -20,8 +20,8 @@ List<LibEntry> featCatalog(AppState app, Set<String>? books) {
         name: f.name,
         book: f.book,
         page: f.page,
+        namePt: f.namePt,
         summary: [
-          if (Lang.isPt && f.namePt.isNotEmpty) f.namePt,
           f.types.join(', '),
           if (f.prereqs.isNotEmpty) '${tr('Pré', 'Prereq')}: ${f.prereqs.map((p) => p.describe(Lang.isPt)).join(', ')}',
           if (f.prereqText.isNotEmpty) f.prereqText,

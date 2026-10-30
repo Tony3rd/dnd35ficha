@@ -165,9 +165,9 @@ def parse_book_text(bid, pages, offset):
     for i in range(n - 3):
         line = full[i].strip()
         # ---------------------------------------------------- magias
-        m = re.fullmatch(SCHOOL_RE, full[i + 1].strip()) if HEAD_RE.match(line) else None
+        m = re.fullmatch(SCHOOL_RE, full[i + 1].strip()) if (HEAD_RE.match(line) or TITLE_RE.match(line)) else None
         if m and 'Level:' in ' '.join(full[i + 2:i + 5]):
-            name = titlecase(line)
+            name = titlecase(line) if line.isupper() else line
             data = {'school': m.group(1), 'subschool': m.group(2) or '', 'descriptors': m.group(3) or ''}
             blob = '\n'.join(full[i + 2:i + 16])
             for label, key in SPELL_FIELDS:
@@ -230,6 +230,7 @@ def parse_book_text(bid, pages, offset):
             STORE.add('magic-item', titlecase(line), bid, page_of[i], summary=full[i + 1].strip(), body=body_from(i, 50), data=data)
 
 
+TITLE_RE = re.compile(r"^[A-Z][A-Za-z’',/ \-]{2,50}$")
 HEAD_RE = re.compile(r"^[A-Z][A-Z0-9’',:\-/() ]{2,60}$")
 FEAT_RE = re.compile(r"^([A-Z][A-Z0-9’',\-/() ]{2,60}?)\s*\[([A-Z][A-Za-z ,]+)\]\s*$")
 
@@ -402,15 +403,39 @@ def norm_src(s):
     return INDEX_ALIASES.get(s, s)
 
 
+KNOWN_SPELLS = set()
+
+
 def index_spells(path):
+    if not KNOWN_SPELLS:
+        KNOWN_SPELLS.update(it['name'] for it in STORE.items.values() if it['kind'] == 'spell')
     txt = open(path, encoding='utf-8', errors='replace').read()
     txt = re.sub(r'\s*\n\s*', ' ', txt)
     pat = re.compile(r"([A-Z][A-Za-z’',:/ \-]{1,60}?)((?:\s?\([A-Za-z0-9.&']{1,12} ?p ?\d{1,3}\))+)\+?\s*\[([^\]]{1,200})\]\s*[–-]\s*")
     ms = list(pat.finditer(txt))
     for k, m in enumerate(ms):
         end = ms[k + 1].start() if k + 1 < len(ms) else min(len(txt), m.end() + 300)
-        summary = txt[m.end():end].strip()[:300]
-        name = m.group(1).strip()
+        summary = txt[m.end():end]
+        summary = re.split(r"\s(?:Page \d+|Dungeons & Dragons|December \d+, \d{4}|Sorted Spell List)|\s[A-Z][\w’',/ ]{2,40}\((?:[A-Za-z0-9.&']{1,12} ?p? ?\d)", summary)[0].strip()[:300]
+        name = re.sub(r'^Sorted Spell List\s+', '', m.group(1).strip())
+        if name not in KNOWN_SPELLS:
+            # nome contaminado pelo texto anterior: usa o maior sufixo que seja magia conhecida
+            words = name.split()
+            for k in range(1, len(words)):
+                suf = ' '.join(words[k:])
+                if suf in KNOWN_SPELLS:
+                    name = suf
+                    break
+            else:
+                if re.search(r'\b[a-z]{4,}\b', name) and len(words) > 3:
+                    tail = []
+                    for w in reversed(words):
+                        if w[:1].isupper() or w in ('of', 'the', 'and', 'from', 'with', 'to', 'into', 'against', 'without', 'or'):
+                            tail.insert(0, w)
+                        else:
+                            break
+                    if tail:
+                        name = ' '.join(tail)
         levels = {}
         for t in m.group(3).split():
             mm = re.match(r'^(.+?)(\d)$', t)
@@ -525,6 +550,40 @@ def parse_tormenta(bid, pages, nums):
                         break
 
 
+# ------------------------------------------------------------------ traduções
+def load_translations():
+    """translations/<tipo>__*.tsv: nome EN, nome PT, resumo PT.
+    translations/<tipo>__*.json: {"Nome EN": {"name_pt":..., "summary_pt":..., "body_pt":...}}.
+    Também usa os nomes em português do núcleo SRD (assets/srd/core.json)."""
+    out = {}
+    base = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'translations')
+    core = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'assets', 'srd', 'core.json')
+    if os.path.exists(core):
+        j = json.load(open(core, encoding='utf-8'))
+        for kind, coll in (('feat', 'feats'), ('weapon', 'weapons'), ('armor', 'armors'), ('race', 'races'),
+                           ('class', 'classes'), ('skill', 'skills'), ('condition', 'conditions')):
+            for it in j.get(coll, []):
+                if it.get('name_pt'):
+                    out.setdefault(f'{kind}:{slug(it["name"])}', {})['name_pt'] = it['name_pt']
+    for f in sorted(glob.glob(os.path.join(base, '*__*.tsv'))):
+        kind = os.path.basename(f).split('__')[0]
+        for line in open(f, encoding='utf-8'):
+            parts = line.rstrip('\n').split('\t')
+            if len(parts) < 2 or not parts[0]:
+                continue
+            d = out.setdefault(f'{kind}:{slug(parts[0])}', {})
+            d['name_pt'] = parts[1]
+            if len(parts) > 2 and parts[2]:
+                d['summary_pt'] = parts[2]
+            if len(parts) > 3 and parts[3]:
+                d['body_pt'] = parts[3].replace('\\n', '\n')
+    for f in sorted(glob.glob(os.path.join(base, '*__*.json'))):
+        kind = os.path.basename(f).split('__')[0]
+        for name, d in json.load(open(f, encoding='utf-8')).items():
+            out.setdefault(f'{kind}:{slug(name)}', {}).update({k: v for k, v in d.items() if v})
+    return out
+
+
 # ------------------------------------------------------------------ montagem
 def main():
     os.makedirs(os.path.dirname(OUT) or '.', exist_ok=True)
@@ -537,7 +596,8 @@ def main():
                        released INTEGER, language TEXT, pages INTEGER, page_offset INTEGER, edition TEXT, file TEXT);
     CREATE TABLE pages(book TEXT, pdf_page INTEGER, page INTEGER, text TEXT);
     CREATE TABLE entries(id INTEGER PRIMARY KEY, kind TEXT, name TEXT, key TEXT, book TEXT, page INTEGER,
-                         summary TEXT, body TEXT, data TEXT, origin TEXT);
+                         summary TEXT, body TEXT, data TEXT, origin TEXT,
+                         name_pt TEXT, summary_pt TEXT, body_pt TEXT);
     ''')
     text_dir = os.path.join(WORK, 'text')
     for rel, bid, title, rel_date, cat, setting, ed in BOOKS:
@@ -615,19 +675,26 @@ def main():
         db.execute('INSERT INTO books VALUES (?,?,?,?,?,?,?,?,?,?,?)',
                    (b, title, '', '', 'reference', date, 'en', 0, 0, '', ''))
 
+    tr_ = load_translations()
     rows = []
     for it in STORE.items.values():
-        rows.append((it['kind'], it['name'], f"{it['kind']}:{slug(it['name'])}", it['book'], it['page'],
-                     it['summary'], it['body'], json.dumps(it['data'], ensure_ascii=False) if it['data'] else '', it['origin']))
-    db.executemany('INSERT INTO entries(kind,name,key,book,page,summary,body,data,origin) VALUES (?,?,?,?,?,?,?,?,?)', rows)
+        key = f"{it['kind']}:{slug(it['name'])}"
+        t = tr_.get(key, {})
+        rows.append((it['kind'], it['name'], key, it['book'], it['page'],
+                     it['summary'], it['body'], json.dumps(it['data'], ensure_ascii=False) if it['data'] else '', it['origin'],
+                     t.get('name_pt', ''), t.get('summary_pt', ''), t.get('body_pt', '')))
+    db.executemany('INSERT INTO entries(kind,name,key,book,page,summary,body,data,origin,name_pt,summary_pt,body_pt) '
+                   'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', rows)
+    print('traduções aplicadas:', sum(1 for r in rows if r[9]))
     db.executescript('''
     CREATE INDEX entries_key ON entries(key);
     CREATE INDEX entries_book ON entries(book, kind);
     CREATE INDEX entries_kind ON entries(kind);
     CREATE INDEX pages_book ON pages(book, page);
-    CREATE VIRTUAL TABLE entries_fts USING fts5(name, summary, body, content='entries', content_rowid='id',
-        tokenize='unicode61 remove_diacritics 2');
-    INSERT INTO entries_fts(rowid, name, summary, body) SELECT id, name, summary, body FROM entries;
+    CREATE VIRTUAL TABLE entries_fts USING fts5(name, summary, body, name_pt, summary_pt, body_pt,
+        content='entries', content_rowid='id', tokenize='unicode61 remove_diacritics 2');
+    INSERT INTO entries_fts(rowid, name, summary, body, name_pt, summary_pt, body_pt)
+        SELECT id, name, summary, body, name_pt, summary_pt, body_pt FROM entries;
     CREATE VIRTUAL TABLE pages_fts USING fts5(text, content='pages', content_rowid='rowid',
         tokenize='unicode61 remove_diacritics 2');
     INSERT INTO pages_fts(rowid, text) SELECT rowid, text FROM pages;
