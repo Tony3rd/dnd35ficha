@@ -74,6 +74,7 @@ class FeatureDef {
   final String name, namePt, text;
   final List<Effect> effects;
   FeatureDef(this.level, this.name, this.namePt, this.text, this.effects);
+  String displayName(bool pt) => pt && namePt.isNotEmpty ? namePt : name;
   factory FeatureDef.fromJson(Map<String, dynamic> j, String src) => FeatureDef(
         (j['level'] as num).toInt(),
         j['name'] as String,

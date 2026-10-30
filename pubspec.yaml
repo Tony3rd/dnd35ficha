@@ -31,3 +31,7 @@ flutter:
   assets:
     - assets/srd/
     - assets/fonts/
+
+dependency_overrides:
+  # image 4.11 usa API do archive ainda não publicada na versão resolvida
+  image: ">=4.5.0 <4.11.0"

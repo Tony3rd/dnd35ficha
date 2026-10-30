@@ -18,7 +18,7 @@ jobs:
           channel: stable
           cache: true
       - name: Gerar pastas de plataforma
-        run: flutter create --platforms=linux --project-name grimorio35 --org br.grimorio .
+        run: flutter create --platforms=linux --project-name grimorio35 --org br.grimorio . && rm -f test/widget_test.dart
       - run: flutter pub get
       - name: Analisar
         run: |
@@ -49,7 +49,7 @@ jobs:
           channel: stable
           cache: true
       - name: Gerar pastas de plataforma
-        run: flutter create --platforms=windows --project-name grimorio35 --org br.grimorio .
+        run: flutter create --platforms=windows --project-name grimorio35 --org br.grimorio . && rm -f test/widget_test.dart
       - name: Ajustar título da janela
         shell: pwsh
         run: |
@@ -100,7 +100,7 @@ jobs:
         with:
           channel: stable
           cache: true
-      - run: flutter create --platforms=linux --project-name grimorio35 --org br.grimorio .
+      - run: flutter create --platforms=linux --project-name grimorio35 --org br.grimorio . && rm -f test/widget_test.dart
       - run: flutter pub get
       - run: flutter build linux --release
       - name: Pacote portátil

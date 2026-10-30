@@ -115,6 +115,8 @@ CLASS_LIST_MAP = {
     'hexblade': 'Hexblade', 'duskblade': 'Duskblade', 'beguiler': 'Beguiler', 'warmage': 'Warmage',
     'wizard': 'Sor/Wiz', 'sorcerer': 'Sor/Wiz', 'spellthief': 'Spellthief', 'healer': 'Healer',
     'sha': 'Sha', 'wu': 'Wu Jen', 'death master': 'Death Master', 'favored soul': 'Clr',
+    'fet/mag': 'Sor/Wiz', 'mag/fet': 'Sor/Wiz', 'mago': 'Sor/Wiz', 'feiticeiro': 'Sor/Wiz', 'clérigo': 'Clr',
+    'druida': 'Drd', 'bardo': 'Brd', 'paladino': 'Pal', 'ranger': 'Rgr', 'clr': 'Clr',
 }
 
 
@@ -481,33 +483,36 @@ def tormenta_pages(base):
 
 
 def parse_tormenta(bid, pages, nums):
+    escolas = r'^(Abjuração|Adivinhação|Conjuração|Encantamento|Evocação|Ilusão|Necromancia|Transmutação|Universal)'
     for i, p in enumerate(pages):
         page = nums.get(i + 1)
         lines = [l.strip() for l in p.split('\n')]
         for j, l in enumerate(lines):
-            nxt = ' '.join(lines[j + 1:j + 6])
-            # talentos: "Nome [Tipo]" seguido de Pré-requisito/Benefício
-            fm = re.match(r'^([A-ZÁÉÍÓÚÂÊÔÃÕÇ][\wÀ-ÿ’\' \-]{2,50}?)\s*\[([\wÀ-ÿ ,]+)\]$', l)
-            if fm and re.search(r'(Pré-requisitos?|Benefício)\s*:', nxt):
-                body = '\n'.join(lines[j:j + 25])
-                ben = re.search(r'Benefício\s*:\s*(.+)', body)
-                STORE.add('feat', fm.group(1).strip().title(), bid, page, summary=(ben.group(1)[:200] if ben else ''),
-                          body=body, data={'types': [t.strip().lower() for t in fm.group(2).split(',')]})
+            if not l or len(l) > 45 or not l[:1].isupper() or ']' in l or l.endswith(('.', ',', ':', ';', '-')):
                 continue
-            # magias: linha de escola seguida de "Nível:"
-            if re.match(r'^(Abjuração|Adivinhação|Conjuração|Encantamento|Evocação|Ilusão|Necromancia|Transmutação|Universal)', lines[j + 1] if j + 1 < len(lines) else '') \
-                    and 'Nível' in nxt and len(l) < 50 and l[:1].isupper():
-                body = '\n'.join(lines[j:j + 40])
+            nxt = lines[j + 1:j + 6]
+            # magias: nome / escola / Nível:
+            if nxt and re.match(escolas, nxt[0]) and any(x.startswith('Nível') for x in nxt[1:3]):
+                body = '\n'.join(lines[j:j + 45])
                 lv = re.search(r'Nível\s*:\s*(.+)', body)
-                data = {'school': lines[j + 1].split()[0]}
+                data = {'school': nxt[0].split('/')[0].split()[0]}
                 if lv:
                     data['levels'] = parse_levels(lv.group(1))
-                STORE.add('spell', l.title() if l.isupper() else l, bid, page, body=body, data=data)
+                STORE.add('spell', l, bid, page, body=body, data=data)
                 continue
-            # classes: "Dado de Vida: d8"
+            # talentos: nome / [tipo] opcional / descrição / Pré-requisitos ou Benefício
+            k0 = 1 if nxt and nxt[0].startswith('[') else 0
+            window = nxt[k0:k0 + 4]
+            hit = [x for x in window if re.match(r'^(Pré-requisitos?|Benefício)\s*:', x)]
+            if hit and not any(re.match(r'^(Pré-requisitos?|Benefício)\s*:', x) for x in lines[max(0, j - 1):j]):
+                body = '\n'.join(lines[j:j + 25])
+                ben = re.search(r'Benefício\s*:\s*(.+)', body)
+                types = re.findall(r'\[([^\]]+)\]', nxt[0]) if k0 else ['geral']
+                STORE.add('feat', l, bid, page, summary=(ben.group(1)[:200] if ben else ''), body=body,
+                          data={'types': [t.strip().lower() for t in types]})
+                continue
             hm = re.match(r'^Dados? de Vida\s*:\s*d(\d+)', l)
             if hm:
-                # nome: procura título em maiúsculas nas linhas anteriores
                 for k in range(j - 1, max(-1, j - 40), -1):
                     t = lines[k]
                     if t.isupper() and 3 < len(t) < 40 and re.fullmatch(r'[A-ZÀ-Ý ]+', t):
