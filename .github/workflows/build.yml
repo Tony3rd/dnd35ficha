@@ -3,8 +3,10 @@ name: build
 on:
   push:
     branches: [ main ]
-  pull_request:
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   test:
@@ -19,9 +21,23 @@ jobs:
         run: flutter create --platforms=linux --project-name grimorio35 --org br.grimorio .
       - run: flutter pub get
       - name: Analisar
-        run: flutter analyze --no-fatal-infos --no-fatal-warnings
+        run: |
+          set +e
+          flutter analyze --no-fatal-infos --no-fatal-warnings > analyze.txt 2>&1
+          echo "exit=$?" >> analyze.txt
       - name: Testes do motor de regras
-        run: flutter test
+        run: |
+          set +e
+          flutter test > test.txt 2>&1
+          echo "exit=$?" >> test.txt
+      - name: Publicar relatório (branch ci-logs)
+        if: always()
+        run: |
+          mkdir -p /tmp/rep && cp analyze.txt test.txt /tmp/rep/ 2>/dev/null || true
+          mkdir -p /tmp/clean && cd /tmp/clean && git init -q && cp /tmp/rep/* . && git add . && git -c user.name=ci -c user.email=ci@x commit -qm "test ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:ci-logs-test
+      - name: Resultado
+        run: grep -q "^exit=0" analyze.txt && grep -q "^exit=0" test.txt
 
   windows:
     runs-on: windows-latest
@@ -40,7 +56,22 @@ jobs:
           $f = "windows/runner/main.cpp"
           (Get-Content $f) -replace 'L"grimorio35"', 'L"Grimorio 3.5"' | Set-Content $f
       - run: flutter pub get
-      - run: flutter build windows --release
+      - name: Compilar
+        shell: bash
+        run: |
+          set +e
+          flutter build windows --release > build.txt 2>&1
+          code=$?
+          echo "exit=$code" >> build.txt
+          tail -60 build.txt
+          exit $code
+      - name: Publicar relatório (branch ci-logs-windows)
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p /tmp/clean && cp build.txt /tmp/clean/ 2>/dev/null || echo "sem log" > /tmp/clean/build.txt
+          cd /tmp/clean && git init -q && git add . && git -c user.name=ci -c user.email=ci@x commit -qm "windows ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" HEAD:ci-logs-windows
       - name: Montar pacote portátil
         shell: pwsh
         run: |
@@ -52,7 +83,7 @@ jobs:
             Copy-Item "C:/Windows/System32/$dll" $out -ErrorAction SilentlyContinue
           }
           New-Item -ItemType Directory -Force "$out/data/characters","$out/data/homebrew" | Out-Null
-          Set-Content "$out/data/LEIA-ME.txt" "Coloque aqui o arquivo rules.sqlite gerado pelo extrator. Fichas ficam em characters/, livros homebrew em homebrew/."
+          Set-Content "$out/data/LEIA-ME.txt" "Coloque aqui as partes rules.sqlite.gz.part1..3 (ou rules.sqlite). Fichas ficam em characters/, livros homebrew em homebrew/."
       - uses: actions/upload-artifact@v4
         with:
           name: Grimorio35-windows-portable
