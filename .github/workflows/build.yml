@@ -49,6 +49,7 @@ jobs:
           channel: stable
           cache: true
       - name: Gerar pastas de plataforma
+        shell: bash
         run: flutter create --platforms=windows --project-name grimorio35 --org br.grimorio . && rm -f test/widget_test.dart
       - name: Ajustar título da janela
         shell: pwsh
