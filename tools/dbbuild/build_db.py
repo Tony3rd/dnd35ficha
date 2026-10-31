@@ -583,9 +583,12 @@ def load_translations():
             if len(parts) > 3 and parts[3]:
                 d['body_pt'] = parts[3].replace('\\n', '\n')
     for f in sorted(glob.glob(os.path.join(base, '*__*.json'))):
-        kind = os.path.basename(f).split('__')[0]
+        kind, rest = os.path.basename(f)[:-5].split('__', 1)
+        book = rest.split('_')[0].lower()
         for name, d in json.load(open(f, encoding='utf-8')).items():
-            out.setdefault(f'{kind}:{slug(name)}', {}).update({k: v for k, v in d.items() if v})
+            # o texto completo vale só para a edição do livro de origem
+            out.setdefault(f'{kind}:{slug(name)}', {}).update(
+                {(f'body_pt@{book}' if k == 'body_pt' else k): v for k, v in d.items() if v})
     return out
 
 
@@ -687,7 +690,8 @@ def main():
         t = tr_.get(key, {})
         rows.append((it['kind'], it['name'], key, it['book'], it['page'],
                      it['summary'], it['body'], json.dumps(it['data'], ensure_ascii=False) if it['data'] else '', it['origin'],
-                     t.get('name_pt', ''), t.get('summary_pt', ''), t.get('body_pt', '')))
+                     t.get('name_pt', ''), t.get('summary_pt', ''),
+                     t.get(f"body_pt@{it['book'].lower()}") or t.get('body_pt', '')))
     db.executemany('INSERT INTO entries(kind,name,key,book,page,summary,body,data,origin,name_pt,summary_pt,body_pt) '
                    'VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', rows)
     print('traduções aplicadas:', sum(1 for r in rows if r[9]))
