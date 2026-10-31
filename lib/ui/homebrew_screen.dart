@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -43,7 +44,7 @@ class HomebrewScreen extends StatelessWidget {
         icon: const Icon(Icons.add),
         label: Text(tr('Novo livro', 'New book')),
         onPressed: () async {
-          final b = await _editBookInfo(context, null);
+          final b = await editBookInfo(context, null);
           if (b == null) return;
           if (app.library.book(b.id) != null) {
             if (context.mounted) toast(context, tr('Já existe um livro com a abreviação ${b.id}.', 'A book with abbreviation ${b.id} already exists.'));
@@ -98,7 +99,7 @@ class HomebrewScreen extends StatelessWidget {
   }
 }
 
-Future<HomebrewBook?> _editBookInfo(BuildContext context, HomebrewBook? b) {
+Future<HomebrewBook?> editBookInfo(BuildContext context, HomebrewBook? b) {
   final id = TextEditingController(text: b?.id ?? 'HB');
   final title = TextEditingController(text: b?.title ?? '');
   final author = TextEditingController(text: b?.author ?? '');
@@ -172,7 +173,7 @@ class HomebrewBookScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.info_outline),
             onPressed: () async {
-              final b = await _editBookInfo(context, book);
+              final b = await editBookInfo(context, book);
               if (b != null) await app.saveHomebrew(b);
             },
           ),
@@ -246,10 +247,51 @@ class _EntryEditorState extends State<EntryEditor> {
   TextEditingController t(String k, [String init = '']) =>
       ctl.putIfAbsent(k, () => TextEditingController(text: '${data[k] ?? init}'));
 
-  Widget field(String k, String label, {double w = 200, String init = '', int lines = 1}) => SizedBox(
-        width: w,
-        child: TextField(controller: t(k, init), maxLines: lines, decoration: InputDecoration(labelText: label)),
-      );
+  Widget field(String k, String label, {double w = 200, String init = '', int lines = 1, String help = ''}) {
+    final f = SizedBox(
+      width: w,
+      child: TextField(controller: t(k, init), maxLines: lines, decoration: InputDecoration(labelText: label)),
+    );
+    return help.isEmpty ? f : Tooltip(message: help, waitDuration: const Duration(milliseconds: 400), child: f);
+  }
+
+  /// Substitui as regras pelas de uma raça/classe existente ("baseada em").
+  void _copyFrom(Map<String, dynamic> src) {
+    setState(() {
+      final keep = {'name': data['name'], 'name_pt': data['name_pt']};
+      data = Map<String, dynamic>.from(jsonDecode(jsonEncode(src)) as Map)
+        ..remove('id')
+        ..remove('book')
+        ..remove('page')
+        ..remove('name')
+        ..remove('name_pt');
+      for (final e in keep.entries) {
+        if (e.value != null) data[e.key] = e.value;
+      }
+      if (data['spellcasting'] != null) data['_casting'] = 'keep';
+      if ((data['advances_casting'] as List?)?.isNotEmpty ?? false) data['_casting'] = 'advance';
+      for (final k in ctl.keys.toList()) {
+        if (!{'name', 'page', 'summary', 'body', 'name_pt'}.contains(k)) ctl.remove(k)?.dispose();
+      }
+    });
+  }
+
+  Widget _copyMenu() {
+    final rules = app().rules;
+    final items = kind == 'race'
+        ? [for (final l in rules.races.values) for (final r in l) (r.displayName(Lang.isPt), r.book, r.toJson())]
+        : [for (final l in rules.classes.values) for (final c in l) (c.displayName(Lang.isPt), c.book, c.toJson())];
+    items.sort((a, b) => a.$1.compareTo(b.$1));
+    return Tooltip(
+      message: tr('Copia todas as regras de uma ${kind == 'race' ? 'raça' : 'classe'} existente para você alterar só o que muda.',
+          'Copies all rules from an existing ${kind == 'race' ? 'race' : 'class'} so you only change what differs.'),
+      child: PopupMenuButton<Map<String, dynamic>>(
+        onSelected: _copyFrom,
+        itemBuilder: (_) => [for (final i in items) PopupMenuItem(value: i.$3, child: Text('${i.$1} (${i.$2})'))],
+        child: Chip(avatar: const Icon(Icons.copy_all, size: 18), label: Text(tr('Baseada em…', 'Based on…'))),
+      ),
+    );
+  }
 
   List<Effect> get effects =>
       ((data['effects'] as List?) ?? []).map((e) => Effect.fromJson(Map<String, dynamic>.from(e as Map))).toList();
@@ -342,17 +384,18 @@ class _EntryEditorState extends State<EntryEditor> {
       case 'race':
         return [
           Wrap(spacing: 12, runSpacing: 10, crossAxisAlignment: WrapCrossAlignment.center, children: [
+            _copyMenu(),
             DropdownButton<String>(
               value: (data['size'] as String?) ?? 'medium',
               items: [for (final s in app().rules.sizeOrder) DropdownMenuItem(value: s, child: Text(Lang.isPt ? app().rules.size(s).namePt : s))],
               onChanged: (v) => setState(() => data['size'] = v),
             ),
-            field('speed', tr('Deslocamento', 'Speed'), w: 110, init: '30'),
-            field('la', 'LA', w: 70, init: '0'),
-            field('favored_class', tr('Classe favorecida (id ou any)', 'Favored class (id or any)'), w: 200, init: 'any'),
-            field('bonus_feats', tr('Talentos extras no 1º', 'Bonus feats at 1st'), w: 150, init: '0'),
-            field('bonus_skill_points', tr('Perícias extras/nível', 'Bonus skill pts/level'), w: 160, init: '0'),
-            field('adj_text', tr('Ajustes (ex.: str +2, cha -2)', 'Adjustments (e.g. str +2, cha -2)'), w: 260,
+            field('speed', tr('Deslocamento', 'Speed'), w: 110, init: '30', help: tr('Deslocamento terrestre básico em pés (30 pés = 9 m).', 'Base land speed in feet.')),
+            field('la', 'LA', w: 70, init: '0', help: tr('Ajuste de nível: somado ao nível de personagem para XP e riqueza.', 'Level adjustment: added to character level for XP and wealth.')),
+            field('favored_class', tr('Classe favorecida (id ou any)', 'Favored class (id or any)'), w: 200, init: 'any', help: tr('Classe ignorada na penalidade de XP por multiclasse. "any" = a classe mais alta.', 'Class ignored for multiclass XP penalty. "any" = highest class.')),
+            field('bonus_feats', tr('Talentos extras no 1º', 'Bonus feats at 1st'), w: 150, init: '0', help: tr('Talentos adicionais no 1º nível (humano: 1).', 'Extra feats at 1st level (human: 1).')),
+            field('bonus_skill_points', tr('Perícias extras/nível', 'Bonus skill pts/level'), w: 160, init: '0', help: tr('Pontos de perícia extras por nível (×4 no 1º). Humano: 1.', 'Extra skill points per level (×4 at 1st). Human: 1.')),
+            field('adj_text', tr('Ajustes (ex.: str +2, cha -2)', 'Adjustments (e.g. str +2, cha -2)'), w: 260, help: tr('Use str, dex, con, int, wis, cha seguidos do valor.', 'Use str, dex, con, int, wis, cha followed by the value.'),
                 init: ((data['ability_adj'] as Map?) ?? {}).entries.map((e) => '${e.key} ${e.value}').join(', ')),
             field('vision', tr('Visão', 'Vision'), w: 200),
             field('languages', tr('Idiomas', 'Languages'), w: 220),
@@ -366,8 +409,9 @@ class _EntryEditorState extends State<EntryEditor> {
         final skills = Set<String>.from((data['class_skills'] as List?) ?? []);
         return [
           Wrap(spacing: 12, runSpacing: 10, crossAxisAlignment: WrapCrossAlignment.center, children: [
-            field('hit_die', tr('Dado de vida', 'Hit die'), w: 110, init: '8'),
-            field('skill_points', tr('Perícias/nível', 'Skills/level'), w: 120, init: '2'),
+            _copyMenu(),
+            field('hit_die', tr('Dado de vida', 'Hit die'), w: 110, init: '8', help: tr('Faces do dado de vida (4, 6, 8, 10 ou 12).', 'Hit die sides (4, 6, 8, 10 or 12).')),
+            field('skill_points', tr('Perícias/nível', 'Skills/level'), w: 120, init: '2', help: tr('Pontos de perícia por nível, antes do modificador de Inteligência.', 'Skill points per level, before Intelligence modifier.')),
             DropdownButton<String>(
               value: (data['bab'] as String?) ?? '3/4',
               items: const [
@@ -393,9 +437,10 @@ class _EntryEditorState extends State<EntryEditor> {
             field('features_text', tr('Habilidades: "nível: nome" por linha', 'Features: "level: name" per line'), w: 600, lines: 5,
                 init: ((data['features'] as List?) ?? []).map((f) => '${(f as Map)['level']}: ${f['name']}').join('\n')),
             DropdownButton<String>(
-              value: (data['_casting'] as String?) ?? 'none',
+              value: (data['_casting'] as String?) ?? (data['spellcasting'] != null ? 'keep' : 'none'),
               items: [
                 DropdownMenuItem(value: 'none', child: Text(tr('Sem conjuração', 'No spellcasting'))),
+                if (data['spellcasting'] != null) DropdownMenuItem(value: 'keep', child: Text(tr('Conjuração copiada', 'Copied spellcasting'))),
                 DropdownMenuItem(value: 'advance', child: Text(tr('+1 nível de conjurador existente', '+1 existing caster level'))),
                 for (final c in app().rules.classes.values.map((l) => l.first).where((c) => c.spellcasting != null))
                   DropdownMenuItem(value: 'copy:${c.id}', child: Text('${tr('Tabela igual a', 'Table like')} ${c.displayName(Lang.isPt)}')),
@@ -537,8 +582,8 @@ class _EntryEditorState extends State<EntryEditor> {
           for (final line in _s('features_text').split('\n'))
             if (line.contains(':')) {'level': int.tryParse(line.split(':').first.trim()) ?? 1, 'name': line.substring(line.indexOf(':') + 1).trim()},
         ];
-        final cast = (d['_casting'] as String?) ?? 'none';
-        d.remove('spellcasting');
+        final cast = (d['_casting'] as String?) ?? (d['spellcasting'] != null ? 'keep' : 'none');
+        if (cast != 'keep') d.remove('spellcasting');
         d.remove('advances_casting');
         if (cast.startsWith('copy:')) {
           final sc = app().rules.classById(cast.substring(5))?.spellcasting;

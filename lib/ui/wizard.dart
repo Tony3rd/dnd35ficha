@@ -5,10 +5,13 @@ import 'package:provider/provider.dart';
 
 import '../app_state.dart';
 import '../data/homebrew.dart';
+import '../engine/bonus.dart';
 import '../engine/defs.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'books_selector.dart';
+import 'effect_editor.dart';
+import 'homebrew_inline.dart';
 import 'portrait.dart';
 import 'tab_feats.dart';
 import 'tab_inventory.dart';
@@ -54,15 +57,15 @@ class _CreationWizardState extends State<CreationWizard> {
   @override
   Widget build(BuildContext context) {
     final steps = [
-      (tr('Fontes', 'Sources'), Icons.library_books_outlined),
-      (tr('Raça', 'Race'), Icons.face_outlined),
-      (tr('Atributos', 'Abilities'), Icons.fitness_center),
-      (tr('Classes e níveis', 'Classes & levels'), Icons.stairs_outlined),
-      (tr('Talentos', 'Feats'), Icons.star_outline),
-      (tr('Magias', 'Spells'), Icons.auto_awesome_outlined),
-      (tr('Equipamento', 'Equipment'), Icons.backpack_outlined),
-      (tr('Detalhes', 'Details'), Icons.edit_note),
-      (tr('Revisão', 'Review'), Icons.fact_check_outlined),
+      (tr('Fontes', 'Sources'), Icons.library_books_outlined, tr('Nome e livros que a ficha pode usar.', 'Name and books the character may use.')),
+      (tr('Raça', 'Race'), Icons.face_outlined, tr('Escolha a raça (ou crie uma homebrew).', 'Choose the race (or create a homebrew one).')),
+      (tr('Atributos', 'Abilities'), Icons.fitness_center, tr('Valores de Força, Destreza, Constituição, Inteligência, Sabedoria e Carisma.', 'Ability scores.')),
+      (tr('Classes e níveis', 'Classes & levels'), Icons.stairs_outlined, tr('Adicione níveis de classe; o XP acompanha o nível.', 'Add class levels; XP follows the level.')),
+      (tr('Talentos', 'Feats'), Icons.star_outline, tr('Talentos de cada nível.', 'Feats per level.')),
+      (tr('Magias', 'Spells'), Icons.auto_awesome_outlined, tr('Magias conhecidas e preparadas das classes conjuradoras.', 'Known and prepared spells.')),
+      (tr('Equipamento', 'Equipment'), Icons.backpack_outlined, tr('Armas, armaduras, itens e dinheiro.', 'Weapons, armor, items and money.')),
+      (tr('Detalhes', 'Details'), Icons.edit_note, tr('Retrato, tendência, divindade e aparência.', 'Portrait, alignment, deity and looks.')),
+      (tr('Revisão', 'Review'), Icons.fact_check_outlined, tr('Ficha completa e avisos pendentes.', 'Full sheet and pending warnings.')),
     ];
     Widget body;
     switch (step) {
@@ -100,7 +103,24 @@ class _CreationWizardState extends State<CreationWizard> {
                 ]));
         break;
       default:
-        body = const SummaryTab();
+        body = Consumer<CharacterController>(
+          builder: (_, c, __) => Column(children: [
+            if (c.sheet.warnings.isNotEmpty)
+              Card(
+                margin: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                color: Theme.of(context).colorScheme.errorContainer,
+                child: ExpansionTile(
+                  initiallyExpanded: true,
+                  leading: Icon(Icons.warning_amber, color: Theme.of(context).colorScheme.onErrorContainer),
+                  title: Text('${c.sheet.warnings.length} ${tr('aviso(s) antes de concluir', 'warning(s) before finishing')}'),
+                  childrenPadding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+                  expandedCrossAxisAlignment: CrossAxisAlignment.start,
+                  children: [for (final w in c.sheet.warnings) Padding(padding: const EdgeInsets.symmetric(vertical: 2), child: Text('• $w'))],
+                ),
+              ),
+            const Expanded(child: SummaryTab()),
+          ]),
+        );
     }
     return ChangeNotifierProvider.value(
       value: ctl,
@@ -117,11 +137,14 @@ class _CreationWizardState extends State<CreationWizard> {
                   for (var i = 0; i < steps.length; i++)
                     Padding(
                       padding: const EdgeInsets.only(right: 6, bottom: 6),
-                      child: ChoiceChip(
-                        avatar: Icon(steps[i].$2, size: 16),
-                        label: Text('${i + 1}. ${steps[i].$1}'),
-                        selected: step == i,
-                        onSelected: (_) => setState(() => step = i),
+                      child: Tooltip(
+                        message: steps[i].$3,
+                        child: ChoiceChip(
+                          avatar: Icon(steps[i].$2, size: 16),
+                          label: Text('${i + 1}. ${steps[i].$1}'),
+                          selected: step == i,
+                          onSelected: (_) => setState(() => step = i),
+                        ),
                       ),
                     ),
                 ]),
@@ -135,8 +158,21 @@ class _CreationWizardState extends State<CreationWizard> {
               child: Row(children: [
                 if (step > 0) OutlinedButton.icon(onPressed: () => setState(() => step--), icon: const Icon(Icons.arrow_back), label: Text(tr('Voltar', 'Back'))),
                 const Spacer(),
-                Text('${c.sheet.characterLevel > 0 ? '${tr('Nível', 'Level')} ${c.sheet.characterLevel} · ' : ''}'
-                    '${c.sheet.warnings.length} ${tr('aviso(s)', 'warning(s)')}'),
+                if (c.sheet.characterLevel > 0) Text('${tr('Nível', 'Level')} ${c.sheet.characterLevel} · '),
+                Tooltip(
+                  message: c.sheet.warnings.isEmpty ? tr('Nenhum aviso.', 'No warnings.') : c.sheet.warnings.map((w) => '• $w').join('\n'),
+                  waitDuration: const Duration(milliseconds: 200),
+                  child: InkWell(
+                    onTap: c.sheet.warnings.isEmpty ? null : () => showWarnings(context, c.sheet.warnings),
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      Icon(c.sheet.warnings.isEmpty ? Icons.check_circle_outline : Icons.warning_amber,
+                          size: 18, color: c.sheet.warnings.isEmpty ? null : Theme.of(context).colorScheme.error),
+                      const SizedBox(width: 4),
+                      Text('${c.sheet.warnings.length} ${tr('aviso(s)', 'warning(s)')}',
+                          style: TextStyle(decoration: c.sheet.warnings.isEmpty ? null : TextDecoration.underline)),
+                    ]),
+                  ),
+                ),
                 const SizedBox(width: 12),
                 if (step < steps.length - 1)
                   FilledButton.icon(onPressed: () => setState(() => step++), icon: const Icon(Icons.arrow_forward), label: Text(tr('Próximo', 'Next')))
@@ -173,10 +209,13 @@ class _SourcesStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.watch<CharacterController>();
     return ListView(padding: const EdgeInsets.all(12), children: [
-      TextFormField(
-        initialValue: c.ch.name,
-        decoration: InputDecoration(labelText: tr('Nome do personagem', 'Character name')),
-        onChanged: (v) => c.update((x) => x.name = v),
+      Tooltip(
+        message: tr('Nome que aparece na lista de fichas e na impressão. Pode ser mudado depois.', 'Name shown in the list and print-out. Can be changed later.'),
+        child: TextFormField(
+          initialValue: c.ch.name,
+          decoration: InputDecoration(labelText: tr('Nome do personagem', 'Character name')),
+          onChanged: (v) => c.update((x) => x.name = v),
+        ),
       ),
       const SizedBox(height: 16),
       Text(tr('Quais livros esta ficha pode usar?', 'Which books may this character use?'), style: Theme.of(context).textTheme.titleMedium),
@@ -231,19 +270,25 @@ class _RaceStep extends StatelessWidget {
       SectionTitle(tr('Raças com regras completas', 'Races with full rules')),
       Wrap(spacing: 6, runSpacing: 6, children: [
         for (final r in structured)
-          ChoiceChip(
-            label: Text('${r.displayName(Lang.isPt)} (${r.book})'),
-            selected: c.ch.raceId == r.id && (c.ch.raceBook ?? r.book) == r.book,
-            onSelected: (_) => c.update((x) {
-              x.raceId = r.id;
-              x.raceBook = r.book;
-            }),
+          Tooltip(
+            message: raceTraitsText(app, r),
+            waitDuration: const Duration(milliseconds: 300),
+            child: ChoiceChip(
+              label: Text('${r.displayName(Lang.isPt)} (${r.book})'),
+              selected: c.ch.raceId == r.id && (c.ch.raceBook ?? r.book) == r.book,
+              onSelected: (_) => c.update((x) {
+                x.raceId = r.id;
+                x.raceBook = r.book;
+              }),
+            ),
           ),
       ]),
       SectionTitle(tr('Outras raças da biblioteca', 'Other races from the library')),
-      Align(
-        alignment: Alignment.centerLeft,
-        child: FilledButton.tonalIcon(
+      Wrap(spacing: 8, runSpacing: 8, children: [
+        Tooltip(
+          message: tr('Procura raças citadas nos livros escolhidos. Se a raça não tiver regras completas na base, você escolhe em qual raça ela se baseia e ajusta as diferenças.',
+              'Searches races mentioned in the chosen books. If the race has no full rules, pick which race it is based on and adjust the differences.'),
+          child: FilledButton.tonalIcon(
           icon: const Icon(Icons.search),
           label: Text(tr('Procurar raça nos livros…', 'Search race in books…')),
           onPressed: () async {
@@ -276,9 +321,90 @@ class _RaceStep extends StatelessWidget {
             });
           },
         ),
-      ),
+        ),
+        HomebrewCreateButton(
+          label: tr('Criar raça homebrew…', 'Create homebrew race…'),
+          onPressed: () async {
+            final e = await createHomebrewInline(context, c, 'race', data: race == null ? null : (race.toJson()..remove('id')..remove('book')..remove('page')..remove('name')..remove('name_pt')));
+            if (e == null) return;
+            c.update((x) {
+              x.raceId = slugify(e.name);
+              x.raceBook = e.book;
+            });
+          },
+        ),
+      ]),
     ]);
   }
+}
+
+Future<void> showWarnings(BuildContext context, List<String> warnings) => showDialog(
+      context: context,
+      builder: (d) => AlertDialog(
+        title: Text(tr('Avisos', 'Warnings')),
+        content: SizedBox(
+          width: 520,
+          child: SingleChildScrollView(
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              for (final w in warnings)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 3),
+                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Icon(Icons.warning_amber, size: 16, color: Theme.of(d).colorScheme.error),
+                    const SizedBox(width: 6),
+                    Expanded(child: Text(w)),
+                  ]),
+                ),
+            ]),
+          ),
+        ),
+        actions: [TextButton(onPressed: () => Navigator.pop(d), child: const Text('OK'))],
+      ),
+    );
+
+/// O que cada atributo afeta (dica ao passar o mouse).
+String abilityHelp(String a) => switch (a) {
+      'str' => tr('Força: ataque e dano corpo a corpo, carga, Escalar, Saltar, Natação.', 'Strength: melee attack and damage, load, Climb, Jump, Swim.'),
+      'dex' => tr('Destreza: CA, ataque à distância, Reflexos, iniciativa, perícias de agilidade.', 'Dexterity: AC, ranged attack, Reflex, initiative, agility skills.'),
+      'con' => tr('Constituição: pontos de vida por nível e Fortitude.', 'Constitution: hit points per level and Fortitude.'),
+      'int' => tr('Inteligência: pontos de perícia por nível, idiomas e magias de mago.', 'Intelligence: skill points, languages and wizard spells.'),
+      'wis' => tr('Sabedoria: Vontade, Observar, Ouvir e magias divinas (clérigo, druida…).', 'Wisdom: Will, Spot, Listen and divine spells.'),
+      _ => tr('Carisma: perícias sociais, expulsar mortos-vivos e magias de feiticeiro/bardo.', 'Charisma: social skills, turning and sorcerer/bard spells.'),
+    };
+
+/// Texto com os traços de uma raça (dica ao passar o mouse).
+String raceTraitsText(AppState app, RaceDef r) => [
+      Lang.isPt ? app.rules.size(r.size).namePt : r.size,
+      '${tr('Deslocamento', 'Speed')} ${r.speed}′',
+      if (r.abilityAdj.isNotEmpty) r.abilityAdj.entries.map((e) => '${abilityAbbr(e.key)} ${sgn(e.value)}').join(', '),
+      if (r.la > 0) 'LA +${r.la}',
+      if (r.favoredClass != 'any') '${tr('Classe favorecida', 'Favored class')}: ${app.rules.classById(r.favoredClass)?.displayName(Lang.isPt) ?? r.favoredClass}',
+      if (r.vision.isNotEmpty) r.vision,
+      for (final e in r.effects) describeEffect(e),
+      ...r.features,
+    ].join('\n');
+
+/// Raça do Livro do Jogador em que uma raça sem regras provavelmente se baseia.
+RaceDef? guessBaseRace(AppState app, String name) {
+  final n = name.toLowerCase();
+  String? id;
+  const map = [
+    (['half-elf', 'half elf', 'meio-elf', 'meio elf'], 'half-elf'),
+    (['half-orc', 'half orc', 'meio-orc', 'meio orc'], 'half-orc'),
+    (['halfling', 'hin', 'kender'], 'halfling'),
+    (['gnome', 'gnomo', 'svirfneblin'], 'gnome'),
+    (['dwarf', 'dwarves', 'anão', 'anões', 'anao', 'duergar'], 'dwarf'),
+    (['elf', 'elves', 'elfo', 'elfa', 'drow', 'eladrin'], 'elf'),
+    (['human', 'humano', 'humana'], 'human'),
+  ];
+  for (final m in map) {
+    if (m.$1.any(n.contains)) {
+      id = m.$2;
+      break;
+    }
+  }
+  if (id == null) return null;
+  return app.rules.pick(app.rules.races, id, book: 'PH');
 }
 
 class _RaceConfigDialog extends StatefulWidget {
@@ -291,38 +417,110 @@ class _RaceConfigDialog extends StatefulWidget {
 class _RaceConfigDialogState extends State<_RaceConfigDialog> {
   String size = 'medium';
   int speed = 30, la = 0;
+  String favored = 'any', vision = '', languages = '', type = 'humanoid';
+  List<Effect> effects = const [];
+  RaceDef? base;
   final adj = <String, int>{for (final a in abilityIds) a: 0};
   final feats = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    final g = guessBaseRace(context.read<AppState>(), widget.entry.name);
+    if (g != null) _apply(g);
+  }
+
+  void _apply(RaceDef? r) {
+    base = r;
+    if (r == null) return;
+    size = r.size;
+    speed = r.speed;
+    la = r.la;
+    favored = r.favoredClass;
+    vision = r.vision;
+    languages = r.languages;
+    type = r.type;
+    effects = List.of(r.effects);
+    for (final a in abilityIds) {
+      adj[a] = r.abilityAdj[a] ?? 0;
+    }
+    feats.text = r.features.join('; ');
+  }
+
+  Widget _tip(String msg, Widget child) => Tooltip(message: msg, waitDuration: const Duration(milliseconds: 400), child: child);
+
   @override
   Widget build(BuildContext context) {
     final app = context.read<AppState>();
+    final all = [for (final l in app.rules.races.values) ...l]..sort((a, b) => a.displayName(Lang.isPt).compareTo(b.displayName(Lang.isPt)));
     return AlertDialog(
-      title: Text('${widget.entry.name} (${widget.entry.sourceLabel})'),
+      title: Text('${widget.entry.label} (${widget.entry.sourceLabel})'),
       content: SizedBox(
-        width: 560,
+        width: 600,
         child: SingleChildScrollView(
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            if (widget.entry.summary.isNotEmpty) Text(widget.entry.summary),
-            Text(tr('Informe os traços mecânicos da raça (veja a página indicada).', 'Enter the race mechanical traits (see the page shown).'),
+            if (widget.entry.shownSummary.isNotEmpty) Text(widget.entry.shownSummary),
+            Text(
+                tr('Esta raça não tem regras completas na base. Escolha em qual raça ela se baseia: as regras são copiadas e você ajusta só o que o livro altera (veja a página indicada).',
+                    'This race has no full rules in the database. Pick the race it is based on: its rules are copied and you adjust only what the book changes (see the page shown).'),
                 style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 8),
-            Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
-              DropdownButton<String>(
-                value: size,
-                items: [for (final s in app.rules.sizeOrder) DropdownMenuItem(value: s, child: Text(Lang.isPt ? app.rules.size(s).namePt : s))],
-                onChanged: (v) => setState(() => size = v ?? 'medium'),
+            _tip(
+              tr('Raça de origem cujas regras são copiadas (tamanho, deslocamento, ajustes, bônus raciais e traços).',
+                  'Source race whose rules are copied (size, speed, adjustments, racial bonuses and traits).'),
+              DropdownButton<RaceDef?>(
+                value: base,
+                hint: Text(tr('Baseada em…', 'Based on…')),
+                items: [
+                  DropdownMenuItem(value: null, child: Text(tr('(nenhuma — preencher do zero)', '(none — fill from scratch)'))),
+                  for (final r in all) DropdownMenuItem(value: r, child: Text('${tr('Baseada em', 'Based on')} ${r.displayName(Lang.isPt)} (${r.book})')),
+                ],
+                onChanged: (v) => setState(() {
+                  if (v == null) {
+                    base = null;
+                    effects = const [];
+                  } else {
+                    _apply(v);
+                  }
+                }),
               ),
-              Text(tr('Deslocamento', 'Speed')),
+            ),
+            Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
+              _tip(
+                tr('Categoria de tamanho: altera CA, ataque, Esconder-se e carga.', 'Size category: changes AC, attack, Hide and load.'),
+                DropdownButton<String>(
+                  value: size,
+                  items: [for (final s in app.rules.sizeOrder) DropdownMenuItem(value: s, child: Text(Lang.isPt ? app.rules.size(s).namePt : s))],
+                  onChanged: (v) => setState(() => size = v ?? 'medium'),
+                ),
+              ),
+              _tip(tr('Deslocamento terrestre básico em pés (30 pés = 9 m).', 'Base land speed in feet.'), Text(tr('Deslocamento', 'Speed'))),
               NumStepper(value: speed, min: 0, max: 120, step: 5, onChanged: (v) => setState(() => speed = v.toInt())),
-              const Text('LA'),
+              _tip(tr('Ajuste de nível: somado ao nível para XP e riqueza.', 'Level adjustment: added to level for XP and wealth.'), const Text('LA')),
               NumStepper(value: la, min: 0, max: 20, onChanged: (v) => setState(() => la = v.toInt())),
             ]),
             for (final a in abilityIds)
               Row(children: [
-                SizedBox(width: 130, child: Text(abilityName(a))),
+                SizedBox(width: 130, child: _tip(tr('Ajuste racial de ${abilityName(a)}.', 'Racial ${abilityName(a)} adjustment.'), Text(abilityName(a)))),
                 NumStepper(value: adj[a]!, min: -10, max: 20, onChanged: (v) => setState(() => adj[a] = v.toInt())),
               ]),
-            TextField(controller: feats, decoration: InputDecoration(labelText: tr('Traços (texto, separados por ;)', 'Traits (text, separated by ;)'))),
+            if (effects.isNotEmpty) ...[
+              const SizedBox(height: 6),
+              Text(tr('Bônus raciais copiados', 'Copied racial bonuses'), style: const TextStyle(fontWeight: FontWeight.bold)),
+              Wrap(spacing: 4, runSpacing: 4, children: [
+                for (final e in List.of(effects))
+                  InputChip(
+                    label: Text(describeEffect(e), style: const TextStyle(fontSize: 12)),
+                    tooltip: tr('Clique no × para remover se o livro tirou este bônus.', 'Click × to remove if the book removed this bonus.'),
+                    onDeleted: () => setState(() => effects = List.of(effects)..remove(e)),
+                  ),
+              ]),
+            ],
+            _tip(
+              tr('Traços sem cálculo automático (visão, imunidades, armas naturais...). Separe por ponto e vírgula.',
+                  'Traits without automatic calculation. Separate with semicolons.'),
+              TextField(controller: feats, maxLines: 3, decoration: InputDecoration(labelText: tr('Traços (texto, separados por ;)', 'Traits (text, separated by ;)'))),
+            ),
           ]),
         ),
       ),
@@ -334,11 +532,19 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
               RaceDef(
                 id: slugify(widget.entry.name),
                 name: widget.entry.name,
+                namePt: widget.entry.namePt,
                 book: widget.entry.book,
                 page: widget.entry.page,
                 size: size,
                 speed: speed,
                 la: la,
+                favoredClass: favored,
+                vision: vision,
+                languages: languages,
+                type: type,
+                bonusFeats: base?.bonusFeats ?? 0,
+                bonusSkillPoints: base?.bonusSkillPoints ?? 0,
+                effects: effects,
                 abilityAdj: {for (final e in adj.entries) if (e.value != 0) e.key: e.value},
                 features: feats.text.split(';').map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
               )),
@@ -392,10 +598,22 @@ class _AbilitiesStep extends StatelessWidget {
     final header = <Widget>[
       SegmentedButton<String>(
         segments: [
-          ButtonSegment(value: 'pointbuy', label: Text(tr('Compra de pontos', 'Point buy'))),
-          ButtonSegment(value: 'array', label: Text(tr('Valores padrão', 'Standard array'))),
-          ButtonSegment(value: 'roll', label: Text(tr('Rolar 4d6', 'Roll 4d6'))),
-          ButtonSegment(value: 'manual', label: Text(tr('Manual', 'Manual'))),
+          ButtonSegment(
+              value: 'pointbuy',
+              label: Text(tr('Compra de pontos', 'Point buy')),
+              tooltip: tr('Todos começam em 8; cada aumento custa pontos do orçamento (DMG p. 169).', 'All start at 8; raises cost budget points.')),
+          ButtonSegment(
+              value: 'array',
+              label: Text(tr('Valores padrão', 'Standard array')),
+              tooltip: tr('Conjunto fixo 15, 14, 13, 12, 10, 8: ordene os atributos arrastando.', 'Fixed set 15, 14, 13, 12, 10, 8: drag to order.')),
+          ButtonSegment(
+              value: 'roll',
+              label: Text(tr('Rolar 4d6', 'Roll 4d6')),
+              tooltip: tr('Rola 4d6 seis vezes descartando o menor dado; depois ordene os atributos.', 'Roll 4d6 six times dropping the lowest; then order.')),
+          ButtonSegment(
+              value: 'manual',
+              label: Text(tr('Manual', 'Manual')),
+              tooltip: tr('Digite qualquer valor (para fichas já existentes).', 'Type any value (for existing characters).')),
         ],
         selected: {ch.abilityMethod},
         onSelectionChanged: (v) => c.update((x) {
@@ -414,7 +632,9 @@ class _AbilitiesStep extends StatelessWidget {
       const SizedBox(height: 12),
       if (ch.abilityMethod == 'pointbuy')
         Row(children: [
-          Text('${tr('Pontos', 'Points')}: $spent / '),
+          Tooltip(
+              message: tr('Pontos gastos / orçamento. Custos: 9=1, 10=2, 11=3, 12=4, 13=5, 14=6, 15=8, 16=10, 17=13, 18=16.', 'Spent / budget.'),
+              child: Text('${tr('Pontos', 'Points')}: $spent / ')),
           NumStepper(value: ch.pointBuyBudget, min: 0, max: 100, onChanged: (v) => c.update((x) => x.pointBuyBudget = v.toInt())),
           Text(tr('  (25 baixo · 28 padrão · 32 heroico)', '  (25 low · 28 standard · 32 heroic)'), style: Theme.of(context).textTheme.bodySmall),
         ]),
@@ -490,7 +710,9 @@ class _AbilitiesStep extends StatelessWidget {
                             index: i,
                             child: ListTile(
                               leading: const Icon(Icons.drag_indicator),
-                              title: Text(abilityName(order[i]), style: const TextStyle(fontWeight: FontWeight.w600)),
+                              title: Tooltip(
+                                  message: abilityHelp(order[i]),
+                                  child: Text(abilityName(order[i]), style: const TextStyle(fontWeight: FontWeight.w600))),
                               subtitle: subtitle(order[i]),
                             ),
                           ),
@@ -512,7 +734,7 @@ class _AbilitiesStep extends StatelessWidget {
       for (final a in abilityIds)
         Card(
           child: ListTile(
-            title: Text(abilityName(a)),
+            title: Tooltip(message: abilityHelp(a), child: Text(abilityName(a))),
             subtitle: subtitle(a),
             trailing: NumStepper(
               value: ch.baseAbilities[a] ?? 8,

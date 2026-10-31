@@ -7,6 +7,7 @@ import '../app_state.dart';
 import '../engine/calc.dart';
 import '../i18n.dart';
 import '../model/character.dart';
+import 'homebrew_inline.dart';
 import 'level_editor.dart';
 import 'widgets.dart';
 
@@ -62,7 +63,11 @@ class LevelsTab extends StatelessWidget {
           child: Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
             Text('${tr('Nível', 'Level')} ${s.characterLevel}${s.ecl != s.characterLevel ? ' (NEP/ECL ${s.ecl})' : ''}',
                 style: Theme.of(context).textTheme.titleMedium),
-            Text('XP ${ch.xp} / ${s.xpNeeded} · ${tr('próximo', 'next')} ${(s.ecl + 1) * s.ecl ~/ 2 * 1000}'),
+            Tooltip(
+              message: tr('Experiência atual / mínimo do nível atual · necessário para o próximo nível. Ao adicionar ou remover níveis, o XP é ajustado ao mínimo do nível.',
+                  'Current XP / minimum for current level · needed for next level. Adding or removing levels sets XP to the level minimum.'),
+              child: Text('XP ${ch.xp} / ${s.xpNeeded} · ${tr('próximo', 'next')} ${xpForEcl(s.ecl + 1)}'),
+            ),
             OutlinedButton(
               onPressed: () async {
                 final v = await promptText(context, tr('XP (use +N para somar)', 'XP (use +N to add)'), initial: '${ch.xp}');
@@ -73,7 +78,9 @@ class LevelsTab extends StatelessWidget {
               },
               child: Text(tr('Editar XP', 'Edit XP')),
             ),
-            DropdownButton<String>(
+            Tooltip(
+              message: tr('Como calcular os PV dos níveis após o 1º (o 1º nível é sempre o máximo).', 'How to compute HP after 1st level (1st is always max).'),
+              child: DropdownButton<String>(
               value: ch.hpMethod,
               items: [
                 DropdownMenuItem(value: 'average', child: Text(tr('PV: média', 'HP: average'))),
@@ -81,6 +88,7 @@ class LevelsTab extends StatelessWidget {
                 DropdownMenuItem(value: 'roll', child: Text(tr('PV: rolar', 'HP: roll'))),
               ],
               onChanged: (v) => c.update((x) => x.hpMethod = v ?? 'average'),
+            ),
             ),
             FilledButton.icon(
               icon: const Icon(Icons.add),
@@ -101,16 +109,32 @@ class LevelsTab extends StatelessWidget {
                 label: Text(tr('Remover último', 'Remove last')),
                 onPressed: () async {
                   if (await confirm(context, tr('Remover o nível ${ch.levels.length}?', 'Remove level ${ch.levels.length}?'))) {
-                    c.update((x) => x.levels.removeLast());
+                    c.update((x) {
+                      x.levels.removeLast();
+                      syncXpToLevel(c.app, x);
+                    });
                   }
                 },
               ),
             if (ch.levels.isNotEmpty)
-              OutlinedButton.icon(
-                icon: const Icon(Icons.auto_fix_high),
-                label: Text(tr('Distribuir perícias…', 'Distribute skills…')),
-                onPressed: () => _autoSkills(context, c),
+              Tooltip(
+                message: tr('Distribui automaticamente os pontos dos níveis sem perícias, na ordem de prioridade escolhida.',
+                    'Auto-spends points of levels without skills, in the chosen priority.'),
+                child: OutlinedButton.icon(
+                  icon: const Icon(Icons.format_list_numbered),
+                  label: Text(tr('Distribuir perícias…', 'Distribute skills…')),
+                  onPressed: () => _autoSkills(context, c),
+                ),
               ),
+            HomebrewCreateButton(
+              label: tr('Criar classe homebrew…', 'Create homebrew class…'),
+              onPressed: () async {
+                final e = await createHomebrewInline(context, c, 'class');
+                if (e != null && context.mounted) {
+                  toast(context, tr('Classe "${e.name}" criada. Use "Subir de nível" para adicioná-la.', 'Class "${e.name}" created. Use "Level up" to add it.'));
+                }
+              },
+            ),
           ]),
         ),
       ),
@@ -143,13 +167,20 @@ class LevelsTab extends StatelessWidget {
             width: 560,
             child: SingleChildScrollView(
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(tr('Toque nas perícias na ordem de prioridade. Os pontos dos níveis sem perícias serão distribuídos maximizando as primeiras.',
-                    'Tap skills in priority order. Points of levels without skills are spent maxing the first ones.')),
+                Text(tr('Toque nas perícias na ordem de prioridade. Os pontos dos níveis sem perícias serão distribuídos maximizando as primeiras. Perícias de classe aparecem primeiro, em negrito; o rosto indica bônus racial.',
+                    'Tap skills in priority order. Points of levels without skills are spent maxing the first ones. Class skills come first, in bold; the face marks a racial bonus.')),
                 const SizedBox(height: 8),
                 Wrap(spacing: 4, runSpacing: 4, children: [
-                  for (final k in s.skills)
+                  for (final k in [...s.skills.where((k) => k.classSkill), ...s.skills.where((k) => !k.classSkill)])
                     FilterChip(
-                      label: Text('${sel.contains(k.key) ? '${sel.indexOf(k.key) + 1}. ' : ''}${k.label}'),
+                      avatar: racialSkillBonus(s, k.key) != null ? const Icon(Icons.face, size: 16) : null,
+                      tooltip: [
+                        k.classSkill ? tr('Perícia de classe', 'Class skill') : tr('Perícia de outra classe', 'Cross-class skill'),
+                        if (racialSkillBonus(s, k.key) != null) '${tr('bônus racial', 'racial bonus')} ${racialSkillBonus(s, k.key)}',
+                      ].join(' · '),
+                      backgroundColor: k.classSkill ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.45) : null,
+                      label: Text('${sel.contains(k.key) ? '${sel.indexOf(k.key) + 1}. ' : ''}${k.label}',
+                          style: TextStyle(fontWeight: k.classSkill ? FontWeight.bold : null)),
                       selected: sel.contains(k.key),
                       onSelected: (v) => setS(() => v ? sel.add(k.key) : sel.remove(k.key)),
                     ),
@@ -204,5 +235,16 @@ Future<void> addLevels(BuildContext context, CharacterController c, int n) async
         if (casters.isNotEmpty) probe.castingAdvances = casters.first;
       }
     }
+    syncXpToLevel(c.app, x);
   });
+}
+
+/// XP mínimo para um NEP (nível efetivo, incluindo o ajuste de nível da raça).
+int xpForEcl(int e) => e <= 1 ? 0 : (e * (e - 1) ~/ 2) * 1000;
+
+/// Ajusta o XP ao mínimo do nível atual quando ele fica fora da faixa do nível
+/// (ao adicionar ou remover níveis).
+void syncXpToLevel(AppState app, Character x) {
+  final e = app.calc.compute(x).ecl;
+  if (x.xp < xpForEcl(e) || x.xp >= xpForEcl(e + 1)) x.xp = xpForEcl(e);
 }

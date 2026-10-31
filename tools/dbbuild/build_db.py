@@ -518,7 +518,16 @@ def parse_tormenta(bid, pages, nums):
         page = nums.get(i + 1)
         lines = [l.strip() for l in p.split('\n')]
         for j, l in enumerate(lines):
-            if not l or len(l) > 45 or not l[:1].isupper() or ']' in l or l.endswith(('.', ',', ':', ';', '-')):
+            if not l or not l[:1].isupper() or l.endswith(('.', ',', ':', ';', '-')):
+                continue
+            # talentos de divindade: "Arma de Valkaria [Valkaria]" (o OCR às vezes troca o "[" por "¡", "|" ou "(")
+            tag = None
+            if ']' in l:
+                mt = re.match(r'^(.{3,}?)\s*[\[¡|(l1]([^\]\[]{2,25})\]\s*$', l)
+                if not mt:
+                    continue
+                l, tag = mt.group(1).strip(), mt.group(2).strip()
+            if len(l) > 45 or len(re.findall(r'[A-Za-zÀ-ÿ]', l)) < 4 or re.match(r'^(Benefício|Pré-requisitos?|Normal|Especial)\s*:', l):
                 continue
             nxt = lines[j + 1:j + 6]
             # magias: nome / escola / Nível:
@@ -538,8 +547,10 @@ def parse_tormenta(bid, pages, nums):
                 body = '\n'.join(lines[j:j + 25])
                 ben = re.search(r'Benefício\s*:\s*(.+)', body)
                 types = re.findall(r'\[([^\]]+)\]', nxt[0]) if k0 else ['geral']
-                STORE.add('feat', l, bid, page, summary=(ben.group(1)[:200] if ben else ''), body=body,
-                          data={'types': [t.strip().lower() for t in types]})
+                data = {'types': [t.strip().lower() for t in types]}
+                if tag:
+                    data['deity'] = tag
+                STORE.add('feat', l, bid, page, summary=(ben.group(1)[:200] if ben else ''), body=body, data=data)
                 continue
             hm = re.match(r'^Dados? de Vida\s*:\s*d(\d+)', l)
             if hm:
@@ -553,6 +564,64 @@ def parse_tormenta(bid, pages, nums):
                             data['skill_points'] = int(sp.group(1))
                         STORE.add('class', t.title(), bid, page, body=ctx, data=data)
                         break
+
+
+# ------------------------------------------------------------------ raças derivadas
+ABIL_PT = {'str': 'For', 'dex': 'Des', 'con': 'Con', 'int': 'Int', 'wis': 'Sab', 'cha': 'Car'}
+SIZE_PT = {'fine': 'Minúsculo', 'diminutive': 'Diminuto', 'tiny': 'Miúdo', 'small': 'Pequeno', 'medium': 'Médio',
+           'large': 'Grande', 'huge': 'Enorme', 'gargantuan': 'Imenso', 'colossal': 'Colossal'}
+
+
+def derived_races(db):
+    """races/*.json: raças descritas nos livros como "iguais às do Livro do Jogador,
+    exceto..." (ou com traços próprios). Copia a raça base do núcleo SRD e aplica
+    as alterações, gerando regras completas para a ficha."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    core = json.load(open(os.path.join(here, '..', '..', 'assets', 'srd', 'core.json'), encoding='utf-8'))
+    bases = {r['id']: r for r in core['races']}
+    known_books = {r[0] for r in db.execute('SELECT id FROM books')}
+    for f in sorted(glob.glob(os.path.join(here, 'races', '*.json'))):
+        spec = json.load(open(f, encoding='utf-8'))
+        made = {}
+        for r in spec['races']:
+            if r.get('copy'):
+                d = json.loads(json.dumps(made[r['copy']]))
+            elif r.get('base'):
+                d = json.loads(json.dumps(bases[r['base']]))
+                d['based_on'] = d.get('name_pt') or d['name']
+            else:
+                d = {'size': 'medium', 'speed': 30, 'ability_adj': {}, 'la': 0, 'favored_class': 'any',
+                     'effects': [], 'features': [], 'languages': 'Comum', 'vision': '', 'type': 'humanoid'}
+            for k in ('size', 'speed', 'la', 'favored_class', 'ability_adj', 'languages', 'vision', 'type',
+                      'bonus_feats', 'bonus_skill_points', 'effects', 'features'):
+                if k in r:
+                    d[k] = json.loads(json.dumps(r[k]))
+            if r.get('remove_effects'):
+                d['effects'] = [e for e in d.get('effects', [])
+                                if not any(x.lower() in (e.get('c') or '').lower() for x in r['remove_effects'])]
+            d['effects'] = d.get('effects', []) + r.get('add_effects', [])
+            if r.get('remove_features'):
+                d['features'] = [x for x in d.get('features', []) if x not in r['remove_features']]
+            d['features'] = d.get('features', []) + r.get('add_features', [])
+            d['name'] = r['name']
+            d['name_pt'] = r['name']
+            d['id'] = slug(r['name'])
+            made[r['name']] = d
+            for bid in spec['books']:
+                if bid not in known_books:
+                    continue
+                page = None
+                if r.get('find'):
+                    row = db.execute('SELECT page FROM pages WHERE book=? AND text LIKE ? ORDER BY pdf_page LIMIT 1',
+                                     (bid, '%' + r['find'] + '%')).fetchone()
+                    page = row[0] if row else None
+                dd = dict(d, book=bid, page=page)
+                adj = ', '.join(f"{'+' if v > 0 else ''}{v} {ABIL_PT.get(k, k)}" for k, v in d.get('ability_adj', {}).items())
+                summary = ' · '.join(x for x in [
+                    f"baseada em {d['based_on']} (Livro do Jogador)" if d.get('based_on') else '',
+                    adj, SIZE_PT.get(d.get('size', ''), ''), f"{d.get('speed', 30) * 3 // 10} m"] if x)
+                body = '\n'.join(d.get('features', []))
+                STORE.add('race', r['name'], bid, page, summary=summary, body=body, data=dd, origin='derived')
 
 
 # ------------------------------------------------------------------ traduções
@@ -646,6 +715,7 @@ def main():
                            [(bid, i + 1, nums.get(i + 1, i + 1), p) for i, p in enumerate(pages) if p.strip()])
             parse_tormenta(bid, pages, nums)
             print(f'{bid}: {len(pages)} páginas (OCR)', flush=True)
+    derived_races(db)
 
     # índices
     idx = os.path.join(WORK, 'idx2')

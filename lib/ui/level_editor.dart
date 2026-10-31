@@ -288,9 +288,16 @@ class LevelEditor extends StatelessWidget {
           '  ·  ${tr('máx. graduações', 'max ranks')} ${maxRanks.toInt()} (${tr('classe', 'class')}) / ${maxRanks / 2} (${tr('outras', 'cross')})',
           style: TextStyle(color: spent > pts ? Theme.of(context).colorScheme.error : null)),
       const SizedBox(height: 4),
+      Text(tr('Destaque: perícias da classe deste nível (custam 1 ponto) vêm primeiro e em negrito; o ícone de rosto marca bônus racial.',
+              'Highlight: class skills of this level (1 point each) come first in bold; the face icon marks a racial bonus.'),
+          style: Theme.of(context).textTheme.bodySmall),
+      const SizedBox(height: 4),
       Wrap(spacing: 4, runSpacing: 4, children: [
-        for (final k in s.skills)
-          _SkillRankChip(index: index, line: k, classSkill: s.isClassSkillFor(l.classId, k.key)),
+        for (final k in [
+          ...s.skills.where((k) => s.isClassSkillFor(l.classId, k.key)),
+          ...s.skills.where((k) => !s.isClassSkillFor(l.classId, k.key)),
+        ])
+          _SkillRankChip(index: index, line: k, classSkill: s.isClassSkillFor(l.classId, k.key), racial: racialSkillBonus(s, k.key)),
       ]),
       const SizedBox(height: 8),
       Wrap(spacing: 6, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
@@ -337,20 +344,29 @@ class _SkillRankChip extends StatelessWidget {
   final int index;
   final SkillLine line;
   final bool classSkill;
-  const _SkillRankChip({required this.index, required this.line, required this.classSkill});
+  final String? racial;
+  const _SkillRankChip({required this.index, required this.line, required this.classSkill, this.racial});
   @override
   Widget build(BuildContext context) {
     final c = context.read<CharacterController>();
     final v = c.ch.levels[index].skillRanks[line.key] ?? 0;
     final step = classSkill ? 1.0 : 0.5;
     final scheme = Theme.of(context).colorScheme;
-    return Container(
+    return Tooltip(
+      message: [
+        classSkill ? tr('Perícia de classe: 1 ponto por graduação.', 'Class skill: 1 point per rank.') : tr('Perícia de outra classe: 2 pontos por graduação.', 'Cross-class: 2 points per rank.'),
+        if (racial != null) '${tr('Bônus racial', 'Racial bonus')}: $racial',
+      ].join('\n'),
+      waitDuration: const Duration(milliseconds: 400),
+      child: Container(
       padding: const EdgeInsets.only(left: 8),
       decoration: BoxDecoration(
+        color: classSkill ? scheme.primaryContainer.withValues(alpha: 0.45) : null,
         border: Border.all(color: v > 0 ? scheme.secondary : Theme.of(context).dividerColor),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
+        if (racial != null) Padding(padding: const EdgeInsets.only(right: 3), child: Icon(Icons.face, size: 13, color: scheme.tertiary)),
         Text(line.label, style: TextStyle(fontSize: 12, fontWeight: classSkill ? FontWeight.bold : FontWeight.normal)),
         InkWell(
           onTap: v > 0
@@ -371,6 +387,18 @@ class _SkillRankChip extends StatelessWidget {
           child: const Padding(padding: EdgeInsets.all(4), child: Icon(Icons.add, size: 14)),
         ),
       ]),
+      ),
     );
   }
+}
+
+/// Bônus raciais da raça da ficha para uma perícia (texto), ou null.
+String? racialSkillBonus(Sheet s, String key) {
+  final base = key.split(':').first;
+  final out = [
+    for (final e in s.race?.effects ?? const [])
+      if (e.target == 'skill.$key' || e.target == 'skill.$base')
+        '${e.value.startsWith('-') ? e.value : '+${e.value}'}${e.situational ? ' (${e.condition})' : ''}',
+  ];
+  return out.isEmpty ? null : out.join(', ');
 }

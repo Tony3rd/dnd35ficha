@@ -1,0 +1,111 @@
+{
+  "_doc": "Raças de Arton (Tormenta d20/3.5). 'base' copia a raça do Livro do Jogador (assets/srd/core.json) e aplica as alterações do livro. 'find' é o título da seção usado para achar a página.",
+  "books": ["T35GJ", "TCC"],
+  "races": [
+    {"name": "Humano (Arton)", "base": "human", "find": "Humanos"},
+    {
+      "name": "Anão (Arton)", "base": "dwarf", "find": "Traços Raciais dos Anões",
+      "remove_effects": ["contra orcs e goblinoides"],
+      "add_effects": [{"t": "attack.all", "v": "2", "ty": "racial", "c": "contra o inimigo escolhido: orcs (e meio-orcs), goblinóides ou trolls"}],
+      "add_features": ["Inimigo racial: escolha orcs, goblinóides ou trolls (+2 nas jogadas de ataque)", "Caminho para Doherimm: talento regional gratuito (se nativo de Doherimm)", "Magias telepáticas para localizar Doherimm provocam Contra-Ataque Mental"]
+    },
+    {
+      "name": "Elfo (Arton)", "base": "elf", "find": "Traços Raciais dos Elfos",
+      "ability_adj": {"dex": 2, "cha": 2, "con": -2},
+      "remove_effects": ["encantamento"],
+      "remove_features": ["Imune a sono mágico"],
+      "add_features": ["Sem imunidade especial contra Encantamento", "Traços exóticos (olhos felinos, patas, cauda) não dão bônus nem penalidades"]
+    },
+    {
+      "name": "Meio-Elfo (Arton)", "base": "half-elf", "find": "Traços Raciais dos Meio-Elfos",
+      "remove_effects": ["encantamento"],
+      "remove_features": ["Imune a sono mágico", "Sangue élfico"],
+      "add_features": ["Sem imunidade especial contra Encantamento", "Sangue humano: considerado humano (não elfo) para habilidades e efeitos"]
+    },
+    {
+      "name": "Meio-Orc (Arton)", "base": "half-orc", "find": "Traços Raciais dos Meio-Orcs",
+      "remove_features": ["Sangue órquico", "Sangue orc"],
+      "add_features": ["Sangue humano: considerado humano (não orc) para habilidades e efeitos"]
+    },
+    {"name": "Halfling (Arton)", "base": "halfling", "find": "Halflings"},
+    {
+      "name": "Minotauro", "find": "Traços Raciais dos Minotauros",
+      "size": "medium", "speed": 30, "ability_adj": {"str": 4, "con": 2, "wis": -2, "cha": -2},
+      "effects": [
+        {"t": "ac", "v": "2", "ty": "natural"},
+        {"t": "skill.survival", "v": "4", "ty": "racial", "c": "rastrear pelo faro"},
+        {"t": "attack.all", "v": "-4", "ty": "morale", "c": "acima de 3 m de altura (medo de altura)"},
+        {"t": "skill.all", "v": "-4", "ty": "morale", "c": "acima de 3 m de altura (medo de altura)"},
+        {"t": "save.all", "v": "-4", "ty": "morale", "c": "acima de 3 m de altura (medo de altura)"}
+      ],
+      "features": ["Chifres: 1d6 + For; em investida contam como lança (+1,5× For no dano); são ataques armados", "Lógica Labiríntica: talento regional gratuito", "Medo de altura", "Inabilidade com magia: não usa magia arcana (não pode ser mago ou feiticeiro; bardo sem magias)"],
+      "languages": "Minotauro, Comum"
+    },
+    {
+      "name": "Goblin (Arton)", "find": "Traços Raciais dos Goblins",
+      "size": "small", "speed": 20, "ability_adj": {"str": -2, "dex": 2, "cha": -2}, "favored_class": "rogue",
+      "effects": [
+        {"t": "save.all", "v": "4", "ty": "racial", "c": "contra doenças (não mágicas)"},
+        {"t": "skill.disable-device", "v": "2", "ty": "racial"},
+        {"t": "skill.craft", "v": "2", "ty": "racial"},
+        {"t": "skill.move-silently", "v": "4", "ty": "racial"}
+      ],
+      "features": ["Inabilidade com magia: não usa magia arcana (não pode ser mago, feiticeiro ou bardo)"],
+      "languages": "Goblin, Comum", "vision": "Visão no escuro 18 m"
+    },
+    {
+      "name": "Centauro", "find": "Traços Raciais dos Centauros",
+      "size": "large", "speed": 40,
+      "effects": [
+        {"t": "ac", "v": "2", "ty": "natural"},
+        {"t": "abilitycheck", "v": "2", "ty": "racial", "c": "testes de Força da metade equina (forçar, puxar, carga)"},
+        {"t": "skill.listen", "v": "2", "ty": "racial"},
+        {"t": "skill.search", "v": "2", "ty": "racial"},
+        {"t": "skill.spot", "v": "2", "ty": "racial"},
+        {"t": "skill.survival", "v": "2", "ty": "racial"}
+      ],
+      "features": ["Usa armas como criatura Média (torso humano)", "Cascos: 2 ataques secundários de 1d6 + For", "Não pode ter graduações em Escalar", "Conta como montado para talentos de combate montado; Cavalgar é substituído por Equilíbrio"],
+      "languages": "Silvestre, Comum"
+    },
+    {
+      "name": "Sprite", "find": "Traços Raciais dos Sprites",
+      "size": "tiny", "speed": 10, "ability_adj": {"str": -4, "dex": 4, "con": -2, "cha": 2}, "favored_class": "sorcerer",
+      "effects": [{"t": "save.all", "v": "2", "ty": "racial", "c": "contra ilusões"}],
+      "features": ["Voo 20 m (boa)", "Falar com Animais à vontade (habilidade similar a magia)", "Com Car 10+: Globos de Luz, Som Fantasma e Prestidigitação 1×/dia cada (NC 1)", "Pode usar o familiar como montaria"],
+      "languages": "Silvestre, Comum", "type": "fey"
+    },
+    {
+      "name": "Elfo-do-Mar", "find": "Elfos-do-Mar",
+      "size": "medium", "speed": 30, "ability_adj": {"dex": 2, "int": -2}, "favored_class": "ranger",
+      "effects": [
+        {"t": "skill.swim", "v": "8", "ty": "racial"},
+        {"t": "skill.handle-animal", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.hide", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.move-silently", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.spot", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.listen", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.search", "v": "2", "ty": "circumstance", "c": "embaixo d'água"},
+        {"t": "skill.survival", "v": "2", "ty": "circumstance", "c": "embaixo d'água"}
+      ],
+      "features": ["Deslocamento 9 m em terra ou na água", "Sonar 120 m (como visão no escuro, só embaixo d'água)", "Proficiência: tridente, arpão e rede", "Sem imunidade especial contra Encantamento", "Respira fora d'água por horas = Con; depois precisa de 8 horas imerso"],
+      "languages": "Élfico, Aquan", "vision": "Visão na penumbra (4×)"
+    },
+    {
+      "name": "Nagah (Fêmea)", "find": "Traços Raciais das Nagahs",
+      "size": "large", "speed": 30, "la": 1, "ability_adj": {"str": -2, "con": -2, "int": 2, "wis": 2}, "favored_class": "cleric",
+      "effects": [
+        {"t": "ac", "v": "4", "ty": "natural"},
+        {"t": "save.all", "v": "2", "ty": "racial", "c": "contra venenos"},
+        {"t": "skill.listen", "v": "-2", "ty": "racial"},
+        {"t": "save.all", "v": "-2", "ty": "racial", "c": "contra frio ou gelo"},
+        {"t": "save.all", "v": "-4", "ty": "racial", "c": "contra encantamentos de bardos ou por música"}
+      ],
+      "features": ["Mordida 1d4, golpe de cauda 1d6 (metade da For) ou agarrar com a cauda 1d4 + For; cauda com alcance 3 m", "Imune a petrificação de criaturas serpentinas (medusa, basilisco, cocatriz)", "Atuação CD 20 pode encantá-la (Vontade anula)", "Não pode ter graduações em Cavalgar"],
+      "languages": "Dracônico, Comum", "vision": "Visão na penumbra", "type": "monstrous humanoid"
+    },
+    {
+      "name": "Nagah (Macho)", "copy": "Nagah (Fêmea)", "find": "Traços Raciais das Nagahs",
+      "ability_adj": {"str": 2, "con": 2, "int": -2, "wis": -2}, "favored_class": "fighter"
+    }
+  ]
+}

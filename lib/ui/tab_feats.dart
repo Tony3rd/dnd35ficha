@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 
 import '../app_state.dart';
 import '../i18n.dart';
+import '../model/character.dart';
 import 'feat_picker.dart';
+import 'homebrew_inline.dart';
 import 'widgets.dart';
 
 class FeatsTab extends StatelessWidget {
@@ -68,6 +70,25 @@ class FeatsTab extends StatelessWidget {
                 if (slot == null || !context.mounted) return;
                 final fp = await pickFeat(context, ch, s, slot: slot);
                 if (fp != null) c.update((x) => x.levels[lvl - 1].feats.add(fp));
+              },
+            ),
+          ),
+        ),
+      if (ch.levels.isNotEmpty)
+        Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.all(6),
+            child: HomebrewCreateButton(
+              label: tr('Criar talento homebrew…', 'Create homebrew feat…'),
+              onPressed: () async {
+                final e = await createHomebrewInline(context, c, 'feat', data: {'types': ['general']});
+                if (e == null || !context.mounted) return;
+                final lvl = await _askLevel(context, c.ch.levels.length);
+                if (lvl == null || !context.mounted) return;
+                final slot = await _askSlot(context, c.sheet, c.ch.levels[lvl - 1].classId);
+                if (slot == null) return;
+                c.update((x) => x.levels[lvl - 1].feats.add(FeatPick(e.name, book: e.book, slot: slot)));
               },
             ),
           ),

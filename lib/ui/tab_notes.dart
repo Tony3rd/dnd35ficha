@@ -24,24 +24,31 @@ class IdentityFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget f(String label, String v, void Function(Character, String) set, {double w = 200}) => SizedBox(
-          width: w,
-          child: TextFormField(
-            initialValue: v,
-            decoration: InputDecoration(labelText: label),
-            onChanged: (t) => update((x) => set(x, t)),
-          ),
-        );
+    Widget f(String label, String v, void Function(Character, String) set, {double w = 200, String help = ''}) {
+      final w0 = SizedBox(
+        width: w,
+        child: TextFormField(
+          initialValue: v,
+          decoration: InputDecoration(labelText: label),
+          onChanged: (t) => update((x) => set(x, t)),
+        ),
+      );
+      return help.isEmpty ? w0 : Tooltip(message: help, waitDuration: const Duration(milliseconds: 400), child: w0);
+    }
     return Wrap(spacing: 10, runSpacing: 10, crossAxisAlignment: WrapCrossAlignment.center, children: [
       f(tr('Nome do personagem', 'Character name'), ch.name, (x, t) => x.name = t, w: 300),
-      f(tr('Jogador', 'Player'), ch.player, (x, t) => x.player = t),
-      f(tr('Campanha', 'Campaign'), ch.campaign, (x, t) => x.campaign = t),
-      DropdownButton<String>(
+      f(tr('Jogador', 'Player'), ch.player, (x, t) => x.player = t, help: tr('Nome da pessoa que joga com este personagem.', 'Who plays this character.')),
+      f(tr('Campanha', 'Campaign'), ch.campaign, (x, t) => x.campaign = t, help: tr('Campanha ou mesa de jogo (ajuda a organizar as fichas).', 'Campaign or table.')),
+      Tooltip(
+        message: tr('Tendência: alguns requisitos de classe (paladino, monge, bárbaro…) e magias dependem dela.', 'Alignment: some class requirements and spells depend on it.'),
+        child: DropdownButton<String>(
         value: alignmentCodes.contains(ch.alignment) ? ch.alignment : 'N',
         items: [for (final a in alignmentCodes) DropdownMenuItem(value: a, child: Text(alignmentName(a)))],
         onChanged: (v) => update((x) => x.alignment = v ?? 'N'),
       ),
-      f(tr('Divindade', 'Deity'), ch.deity, (x, t) => x.deity = t),
+      ),
+      f(tr('Divindade', 'Deity'), ch.deity, (x, t) => x.deity = t,
+          help: tr('Deus patrono. Clérigos, paladinos e alguns talentos (ex.: talentos de divindade de Tormenta) exigem um.', 'Patron deity; clerics, paladins and some feats require one.')),
       f(tr('Sexo', 'Gender'), ch.gender, (x, t) => x.gender = t, w: 110),
       f(tr('Idade', 'Age'), ch.age, (x, t) => x.age = t, w: 90),
       f(tr('Altura', 'Height'), ch.height, (x, t) => x.height = t, w: 100),
@@ -80,7 +87,7 @@ class NotesTab extends StatelessWidget {
         ),
       ]),
       SectionTitle(tr('Livros usados nesta ficha', 'Books used by this character')),
-      BooksSelector(
+      ChosenBooks(
         selected: ch.allowedBooks,
         policy: ch.versionPolicy,
         onChanged: (b, p) => c.update((x) {

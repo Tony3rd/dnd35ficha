@@ -14,6 +14,18 @@ class SkillsTab extends StatefulWidget {
 class _SkillsTabState extends State<SkillsTab> {
   String filter = '';
   bool onlyRanked = false;
+  bool onlyClass = false;
+  bool onlyRacial = false;
+
+  Widget _badge(BuildContext context, String text, Color bg, Color fg, String tip) => Tooltip(
+        message: tip,
+        child: Container(
+          margin: const EdgeInsets.only(left: 6),
+          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+          decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
+          child: Text(text, style: TextStyle(fontSize: 11, color: fg, fontWeight: FontWeight.w600)),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +33,19 @@ class _SkillsTabState extends State<SkillsTab> {
     final s = c.sheet;
     final ch = c.ch;
     final lastLevel = ch.levels.isEmpty ? null : ch.levels.last;
+    // perícias com bônus raciais (efeitos da raça que apontam para skill.*)
+    final racial = <String, List<String>>{};
+    for (final e in s.race?.effects ?? const []) {
+      if (!e.target.startsWith('skill.') || e.target == 'skill.all') continue;
+      final id = e.target.substring(6);
+      racial.putIfAbsent(id, () => []).add('${e.value.startsWith('-') ? e.value : '+${e.value}'}${e.situational ? ' (${e.condition})' : ''}');
+    }
+    List<String>? racialOf(String key) => racial[key] ?? racial[key.split(':').first];
+    final scheme = Theme.of(context).colorScheme;
     final rows = s.skills.where((k) {
       if (onlyRanked && k.ranks <= 0) return false;
+      if (onlyClass && !k.classSkill) return false;
+      if (onlyRacial && racialOf(k.key) == null) return false;
       if (filter.isEmpty) return true;
       return k.label.toLowerCase().contains(filter.toLowerCase()) || k.def.name.toLowerCase().contains(filter.toLowerCase());
     }).toList();
@@ -41,7 +64,31 @@ class _SkillsTabState extends State<SkillsTab> {
             ),
           ),
           FilterChip(label: Text(tr('Só com graduações', 'Ranked only')), selected: onlyRanked, onSelected: (v) => setState(() => onlyRanked = v)),
-          Text('${tr('Pontos', 'Points')}: $spentFmt / ${s.skillPointsTotal}'),
+          Tooltip(
+            message: tr('Perícias de classe de qualquer uma das suas classes: custam 1 ponto por graduação e o máximo é nível + 3.',
+                'Class skills of any of your classes: 1 point per rank, max level + 3.'),
+            child: FilterChip(
+              avatar: Icon(Icons.school, size: 16, color: scheme.primary),
+              label: Text(tr('De classe', 'Class skills')),
+              selected: onlyClass,
+              onSelected: (v) => setState(() => onlyClass = v),
+            ),
+          ),
+          if (racial.isNotEmpty)
+            Tooltip(
+              message: tr('Perícias com bônus racial da raça ${s.race?.displayName(true) ?? ''}.', 'Skills with a racial bonus from ${s.race?.displayName(false) ?? ''}.'),
+              child: FilterChip(
+                avatar: Icon(Icons.face, size: 16, color: scheme.tertiary),
+                label: Text(tr('Raciais', 'Racial')),
+                selected: onlyRacial,
+                onSelected: (v) => setState(() => onlyRacial = v),
+              ),
+            ),
+          Tooltip(
+            message: tr('Pontos gastos / disponíveis em todos os níveis. Perícia de classe custa 1 ponto por graduação; as outras custam 2 (meia graduação por ponto).',
+                'Points spent / available across all levels. Class skills cost 1 per rank; others cost 2.'),
+            child: Text('${tr('Pontos', 'Points')}: $spentFmt / ${s.skillPointsTotal}'),
+          ),
           if (s.armorCheck != 0) Text('${tr('Penalidade de armadura', 'Armor check')}: ${s.armorCheck}'),
           OutlinedButton.icon(
             icon: const Icon(Icons.add),
@@ -82,8 +129,10 @@ class _SkillsTabState extends State<SkillsTab> {
             final here = lastLevel?.skillRanks[k.key] ?? 0;
             final classHere = lastLevel != null && s.isClassSkillFor(lastLevel.classId, k.key);
             final step = classHere ? 1.0 : 0.5;
+            final rac = racialOf(k.key);
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              color: k.classSkill ? scheme.primaryContainer.withValues(alpha: 0.35) : null,
               child: ListTile(
                 dense: true,
                 leading: SizedBox(
@@ -97,10 +146,17 @@ class _SkillsTabState extends State<SkillsTab> {
                   ),
                 ),
                 title: Row(children: [
-                  if (k.classSkill) Icon(Icons.circle, size: 8, color: Theme.of(context).colorScheme.secondary),
-                  if (k.classSkill) const SizedBox(width: 6),
-                  Flexible(child: Text(k.label)),
-                  if (k.def.trainedOnly) const Text('  ✱', style: TextStyle(fontSize: 11)),
+                  Flexible(child: Text(k.label, style: TextStyle(fontWeight: k.classSkill ? FontWeight.w600 : null))),
+                  if (k.def.trainedOnly)
+                    Tooltip(message: tr('Só pode ser usada com graduações (treinada).', 'Trained only.'), child: const Text('  ✱', style: TextStyle(fontSize: 11))),
+                  if (k.classSkill)
+                    _badge(context, tr('classe', 'class'), scheme.primary, scheme.onPrimary,
+                        classHere || lastLevel == null
+                            ? tr('Perícia de classe: 1 ponto por graduação.', 'Class skill: 1 point per rank.')
+                            : tr('Perícia de classe de outra classe sua; no nível atual custa 2 pontos por graduação.', 'Class skill of another of your classes; costs 2 per rank at the current level.')),
+                  if (rac != null)
+                    _badge(context, '${tr('raça', 'race')} ${rac.first.split(' ').first}', scheme.tertiary, scheme.onTertiary,
+                        '${tr('Bônus racial', 'Racial bonus')}: ${rac.join(', ')}'),
                 ]),
                 subtitle: Text([
                   '${k.def.ability == 'none' ? '—' : abilityAbbr(k.def.ability)} ${sgn(k.abilMod)}',

@@ -3,10 +3,12 @@ import 'package:provider/provider.dart';
 
 import '../app_state.dart';
 import '../data/homebrew.dart';
+import '../engine/bonus.dart';
 import '../engine/defs.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'effect_editor.dart';
+import 'homebrew_inline.dart';
 import 'widgets.dart';
 
 class InventoryTab extends StatelessWidget {
@@ -77,6 +79,24 @@ class InventoryTab extends StatelessWidget {
           final it = await editItem(context, Item(name: tr('Novo item', 'New item')));
           if (it != null) c.update((x) => x.items.add(it));
         }),
+        HomebrewCreateButton(
+          label: tr('Item homebrew…', 'Homebrew item…'),
+          onPressed: () async {
+            final e = await createHomebrewInline(context, c, 'magic-item');
+            if (e == null || !context.mounted) return;
+            final it = await editItem(
+                context,
+                Item(
+                  name: e.name,
+                  kind: e.kind == 'magic-item' ? 'magic' : 'gear',
+                  notes: '${e.sourceLabel}${e.summary.isNotEmpty ? ' — ${e.summary}' : ''}',
+                  cost: (e.data['cost'] as num?)?.toDouble() ?? 0,
+                  weight: (e.data['weight'] as num?)?.toDouble() ?? 0,
+                  effects: [for (final x in (e.data['effects'] as List?) ?? []) Effect.fromJson(Map<String, dynamic>.from(x as Map))],
+                ));
+            if (it != null) c.update((x) => x.items.add(it));
+          },
+        ),
       ]),
       for (final k in kinds)
         if (ch.items.any((i) => i.kind == k)) ...[

@@ -6,6 +6,7 @@ import '../data/homebrew.dart';
 import '../engine/calc.dart';
 import '../i18n.dart';
 import '../model/character.dart';
+import 'homebrew_inline.dart';
 import 'widgets.dart';
 
 class SpellsTab extends StatelessWidget {
@@ -91,6 +92,18 @@ class _CasterCard extends StatelessWidget {
             const SizedBox(width: 6),
             Chip(label: Text(spontaneous ? tr('espontâneo', 'spontaneous') : tr('preparado', 'prepared'))),
             const Spacer(),
+            HomebrewCreateButton(
+              label: tr('Magia homebrew…', 'Homebrew spell…'),
+              onPressed: () async {
+                final e = await createHomebrewInline(context, c, 'spell', data: {
+                  'levels': {sc.list: 1}
+                });
+                if (e == null) return;
+                final lv = (e.data['levels'] as Map?)?[sc.list];
+                final level = lv is num ? lv.toInt() : 1;
+                edit((cs) => cs.known.add(KnownSpell(name: e.name, book: e.book, level: level, classId: ci.cls.id)));
+              },
+            ),
             IconButton(
               tooltip: tr('Rolar nível de conjurador (RM)', 'Roll caster level check (SR)'),
               icon: const Icon(Icons.casino_outlined),

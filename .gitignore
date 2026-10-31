@@ -20,5 +20,5 @@ pubspec.lock
 # Conteúdo extraído dos livros do usuário: NUNCA versionar
 /data/
 *.sqlite
-tools/dbbuild/work/
+tools/dbbuild/work
 tools/dbbuild/out/
