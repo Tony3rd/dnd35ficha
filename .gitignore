@@ -22,3 +22,4 @@ pubspec.lock
 *.sqlite
 tools/dbbuild/work
 tools/dbbuild/out/
+__pycache__/
