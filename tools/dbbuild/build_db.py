@@ -153,13 +153,18 @@ def parse_book_text(bid, pages, offset):
     def body_from(start, maxlines=120):
         out = []
         for j in range(start, min(n, start + maxlines)):
-            l = full[j]
-            if j > start + 3 and HEAD_RE.match(l.strip()) and len(l.strip()) > 3:
-                # próxima entrada em maiúsculas
+            l = full[j].strip()
+            if j > start:
                 nxt = full[j + 1].strip() if j + 1 < n else ''
-                if re.match(SCHOOL_RE, nxt) or FEAT_RE.match(l.strip()) or re.match(r'(Level|Discipline)', nxt):
+                if FEAT_RE.match(l):
                     break
-            out.append(l)
+                if (HEAD_RE.match(l) or TITLE_RE.match(l)) and (re.fullmatch(SCHOOL_RE, nxt) or
+                        re.match(r'(Clairsentience|Metacreativity|Psychokinesis|Psychometabolism|Psychoportation|Telepathy)', nxt) or
+                        re.match(r'Price(?: \(Item Level\))?:', nxt)):
+                    break
+                if re.match(r'^(CHAPTER \d+:?|Table \d+[–-]\d+:)', l):
+                    continue
+            out.append(full[j])
         return re.sub(r'\n{3,}', '\n\n', '\n'.join(out)).strip()
 
     for i in range(n - 3):
