@@ -9,6 +9,7 @@ import '../i18n.dart';
 import '../model/character.dart';
 import 'homebrew_inline.dart';
 import 'level_editor.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 /// Distribui pontos de perícia em todos os níveis, na ordem de prioridade dada,
@@ -90,21 +91,21 @@ class LevelsTab extends StatelessWidget {
               onChanged: (v) => c.update((x) => x.hpMethod = v ?? 'average'),
             ),
             ),
-            FilledButton.icon(
+            withHelp(tr('Subir de nível', 'Level up'), FilledButton.icon(
               icon: const Icon(Icons.add),
               label: Text(tr('Subir de nível', 'Level up')),
               onPressed: () => addLevels(context, c, 1),
-            ),
-            OutlinedButton.icon(
+            )),
+            withHelp(tr('Vários níveis…', 'Several levels…'), OutlinedButton.icon(
               icon: const Icon(Icons.fast_forward),
               label: Text(tr('Vários níveis…', 'Several levels…')),
               onPressed: () async {
                 final n = await promptInt(context, tr('Quantos níveis adicionar?', 'How many levels?'), initial: 5);
                 if (n != null && n > 0 && context.mounted) await addLevels(context, c, n);
               },
-            ),
+            )),
             if (ch.levels.isNotEmpty)
-              OutlinedButton.icon(
+              withHelp(tr('Remover último', 'Remove last'), OutlinedButton.icon(
                 icon: const Icon(Icons.remove),
                 label: Text(tr('Remover último', 'Remove last')),
                 onPressed: () async {
@@ -115,7 +116,7 @@ class LevelsTab extends StatelessWidget {
                     });
                   }
                 },
-              ),
+              )),
             if (ch.levels.isNotEmpty)
               Tooltip(
                 message: tr('Distribui automaticamente os pontos dos níveis sem perícias, na ordem de prioridade escolhida.',
@@ -175,6 +176,7 @@ class LevelsTab extends StatelessWidget {
                     FilterChip(
                       avatar: racialSkillBonus(s, k.key) != null ? const Icon(Icons.face, size: 16) : null,
                       tooltip: [
+                        if (skillHelp(k.key) != null) skillHelp(k.key)!,
                         k.classSkill ? tr('Perícia de classe', 'Class skill') : tr('Perícia de outra classe', 'Cross-class skill'),
                         if (racialSkillBonus(s, k.key) != null) '${tr('bônus racial', 'racial bonus')} ${racialSkillBonus(s, k.key)}',
                       ].join(' · '),

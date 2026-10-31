@@ -73,13 +73,13 @@ class InventoryTab extends StatelessWidget {
         ),
       ),
       Wrap(spacing: 8, runSpacing: 6, children: [
-        FilledButton.tonalIcon(icon: const Icon(Icons.hardware), label: Text(tr('Arma', 'Weapon')), onPressed: () => _addWeapon(context, c)),
-        FilledButton.tonalIcon(icon: const Icon(Icons.shield_outlined), label: Text(tr('Armadura/escudo', 'Armor/shield')), onPressed: () => _addArmor(context, c)),
-        FilledButton.tonalIcon(icon: const Icon(Icons.auto_awesome), label: Text(tr('Item da biblioteca', 'Library item')), onPressed: () => _addFromLibrary(context, c)),
-        OutlinedButton.icon(icon: const Icon(Icons.add), label: Text(tr('Item livre', 'Custom item')), onPressed: () async {
+        withHelp(tr('Arma', 'Weapon'), FilledButton.tonalIcon(icon: const Icon(Icons.hardware), label: Text(tr('Arma', 'Weapon')), onPressed: () => _addWeapon(context, c))),
+        withHelp(tr('Armadura/escudo', 'Armor/shield'), FilledButton.tonalIcon(icon: const Icon(Icons.shield_outlined), label: Text(tr('Armadura/escudo', 'Armor/shield')), onPressed: () => _addArmor(context, c))),
+        withHelp(tr('Item da biblioteca', 'Library item'), FilledButton.tonalIcon(icon: const Icon(Icons.auto_awesome), label: Text(tr('Item da biblioteca', 'Library item')), onPressed: () => _addFromLibrary(context, c))),
+        withHelp(tr('Item livre', 'Custom item'), OutlinedButton.icon(icon: const Icon(Icons.add), label: Text(tr('Item livre', 'Custom item')), onPressed: () async {
           final it = await editItem(context, Item(name: tr('Novo item', 'New item')));
           if (it != null) c.update((x) => x.items.add(it));
-        }),
+        })),
         HomebrewCreateButton(
           label: tr('Item homebrew…', 'Homebrew item…'),
           onPressed: () async {
@@ -273,8 +273,8 @@ class _ItemDialogState extends State<_ItemDialog> {
               tf('cost', tr('Custo (po)', 'Cost (gp)'), '${it.cost}', w: 100),
               tf('enh', tr('Melhoria +', 'Enhancement +'), '${it.enhancement}', w: 100),
               tf('charges', tr('Cargas', 'Charges'), it.charges?.toString() ?? '', w: 80),
-              FilterChip(label: Text(tr('Obra-prima', 'Masterwork')), selected: it.masterwork, onSelected: (v) => setState(() => it.masterwork = v)),
-              FilterChip(label: Text(tr('Equipado', 'Equipped')), selected: it.equipped, onSelected: (v) => setState(() => it.equipped = v)),
+              withHelp(tr('Obra-prima', 'Masterwork'), FilterChip(label: Text(tr('Obra-prima', 'Masterwork')), selected: it.masterwork, onSelected: (v) => setState(() => it.masterwork = v))),
+              withHelp(tr('Equipado', 'Equipped'), FilterChip(label: Text(tr('Equipado', 'Equipped')), selected: it.equipped, onSelected: (v) => setState(() => it.equipped = v))),
               DropdownButton<String>(
                 value: ['body', 'pack', 'mount', 'stored'].contains(it.location) ? it.location : 'body',
                 items: [
@@ -301,9 +301,9 @@ class _ItemDialogState extends State<_ItemDialog> {
                 tf('critMult', tr('Mult. (ex. 3)', 'Mult. (e.g. 3)'), it.critMult?.toString() ?? '', w: 100),
                 tf('range', tr('Incremento (pés)', 'Range (ft)'), it.range?.toString() ?? '', w: 110),
                 tf('comp', tr('For composto', 'Composite Str'), '${it.compositeStr}', w: 110),
-                FilterChip(label: Text(tr('Duas mãos', 'Two-handed')), selected: it.twoHanded, onSelected: (v) => setState(() => it.twoHanded = v)),
-                FilterChip(label: Text(tr('Mão inábil', 'Off-hand')), selected: it.offHand, onSelected: (v) => setState(() => it.offHand = v)),
-                FilterChip(label: Text(tr('Mostrar em ataques', 'Show in attacks')), selected: it.showInAttacks, onSelected: (v) => setState(() => it.showInAttacks = v)),
+                withHelp(tr('Duas mãos', 'Two-handed'), FilterChip(label: Text(tr('Duas mãos', 'Two-handed')), selected: it.twoHanded, onSelected: (v) => setState(() => it.twoHanded = v))),
+                withHelp(tr('Mão inábil', 'Off-hand'), FilterChip(label: Text(tr('Mão inábil', 'Off-hand')), selected: it.offHand, onSelected: (v) => setState(() => it.offHand = v))),
+                withHelp(tr('Mostrar em ataques', 'Show in attacks'), FilterChip(label: Text(tr('Mostrar em ataques', 'Show in attacks')), selected: it.showInAttacks, onSelected: (v) => setState(() => it.showInAttacks = v))),
               ]),
             ],
             if (it.kind == 'armor' || it.kind == 'shield') ...[

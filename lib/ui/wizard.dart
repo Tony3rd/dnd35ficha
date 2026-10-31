@@ -19,6 +19,7 @@ import 'tab_levels.dart';
 import 'tab_notes.dart';
 import 'tab_spells.dart';
 import 'tab_summary.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 /// Assistente de criação: guia passo a passo, reaproveitando as abas da ficha.
@@ -156,7 +157,7 @@ class _CreationWizardState extends State<CreationWizard> {
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Row(children: [
-                if (step > 0) OutlinedButton.icon(onPressed: () => setState(() => step--), icon: const Icon(Icons.arrow_back), label: Text(tr('Voltar', 'Back'))),
+                if (step > 0) withHelp(tr('Voltar', 'Back'), OutlinedButton.icon(onPressed: () => setState(() => step--), icon: const Icon(Icons.arrow_back), label: Text(tr('Voltar', 'Back')))),
                 const Spacer(),
                 if (c.sheet.characterLevel > 0) Text('${tr('Nível', 'Level')} ${c.sheet.characterLevel} · '),
                 Tooltip(
@@ -175,9 +176,9 @@ class _CreationWizardState extends State<CreationWizard> {
                 ),
                 const SizedBox(width: 12),
                 if (step < steps.length - 1)
-                  FilledButton.icon(onPressed: () => setState(() => step++), icon: const Icon(Icons.arrow_forward), label: Text(tr('Próximo', 'Next')))
+                  withHelp(tr('Próximo', 'Next'), FilledButton.icon(onPressed: () => setState(() => step++), icon: const Icon(Icons.arrow_forward), label: Text(tr('Próximo', 'Next'))))
                 else
-                  FilledButton.icon(
+                  withHelp(tr('Concluir', 'Finish'), FilledButton.icon(
                     icon: const Icon(Icons.check),
                     label: Text(tr('Concluir', 'Finish')),
                     onPressed: () async {
@@ -193,7 +194,7 @@ class _CreationWizardState extends State<CreationWizard> {
                       }
                       if (context.mounted) Navigator.pop(context, c.ch);
                     },
-                  ),
+                  )),
               ]),
             ),
           ),
@@ -519,7 +520,7 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
             _tip(
               tr('Traços sem cálculo automático (visão, imunidades, armas naturais...). Separe por ponto e vírgula.',
                   'Traits without automatic calculation. Separate with semicolons.'),
-              TextField(controller: feats, maxLines: 3, decoration: InputDecoration(labelText: tr('Traços (texto, separados por ;)', 'Traits (text, separated by ;)'))),
+              withHelp(tr('Traços (texto, separados por ;)', 'Traits (text, separated by ;)'), TextField(controller: feats, maxLines: 3, decoration: InputDecoration(labelText: tr('Traços (texto, separados por ;)', 'Traits (text, separated by ;)')))),
             ),
           ]),
         ),
@@ -641,7 +642,7 @@ class _AbilitiesStep extends StatelessWidget {
       if (ch.abilityMethod == 'roll')
         Align(
           alignment: Alignment.centerLeft,
-          child: FilledButton.tonalIcon(
+          child: withHelp(tr('Rolar 6× 4d6 (descarta o menor)', 'Roll 6× 4d6 drop lowest'), FilledButton.tonalIcon(
             icon: const Icon(Icons.casino),
             label: Text(tr('Rolar 6× 4d6 (descarta o menor)', 'Roll 6× 4d6 drop lowest')),
             onPressed: () {
@@ -649,7 +650,7 @@ class _AbilitiesStep extends StatelessWidget {
               c.update((x) => _assign(x, _order(x), vals));
               toast(context, '${tr('Resultados', 'Results')}: ${vals.join(', ')}');
             },
-          ),
+          )),
         ),
       if (ordered)
         Padding(

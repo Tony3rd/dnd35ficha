@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../engine/bonus.dart';
 import '../engine/expr.dart';
 import '../i18n.dart';
+import 'help.dart';
 
 /// Lista editável de modificadores (usada em itens, buffs, ajustes manuais e homebrew).
 class EffectListEditor extends StatelessWidget {
@@ -26,14 +27,14 @@ class EffectListEditor extends StatelessWidget {
           },
           trailing: IconButton(icon: const Icon(Icons.close, size: 18), onPressed: () => onChanged([...effects]..removeAt(i))),
         ),
-      TextButton.icon(
+      withHelp(tr('Adicionar modificador', 'Add modifier'), TextButton.icon(
         icon: const Icon(Icons.add, size: 18),
         label: Text(tr('Adicionar modificador', 'Add modifier')),
         onPressed: () async {
           final e = await editEffect(context, null, skillIds: skillIds);
           if (e != null) onChanged([...effects, e]);
         },
-      ),
+      )),
     ]);
   }
 }
@@ -96,22 +97,22 @@ class _EffectDialogState extends State<_EffectDialog> {
             onSelected: (t) => target.text = t,
             fieldViewBuilder: (c, ctl, focus, onSubmit) {
               ctl.addListener(() => target.text = ctl.text);
-              return TextField(
+              return withHelp(tr('Alvo (ex.: ac, save.will, skill.hide, attack.weapon:longsword)', 'Target'), TextField(
                 controller: ctl,
                 focusNode: focus,
                 decoration: InputDecoration(labelText: tr('Alvo (ex.: ac, save.will, skill.hide, attack.weapon:longsword)', 'Target')),
-              );
+              ));
             },
           ),
           const SizedBox(height: 10),
-          TextField(
+          withHelp(tr('Valor ou fórmula', 'Value or formula'), TextField(
             controller: value,
             decoration: InputDecoration(
               labelText: tr('Valor ou fórmula', 'Value or formula'),
               helperText: tr('Ex.: 2, -1, floor(@class.bard/4)+1, @abil.cha.mod', 'e.g. 2, -1, floor(@class.bard/4)+1, @abil.cha.mod'),
               errorText: err,
             ),
-          ),
+          )),
           const SizedBox(height: 10),
           DropdownButton<String>(
             isExpanded: true,
@@ -123,11 +124,11 @@ class _EffectDialogState extends State<_EffectDialog> {
             onChanged: (v) => setState(() => type = v ?? BonusType.untyped),
           ),
           const SizedBox(height: 10),
-          TextField(
+          withHelp(tr('Condição (opcional — vira nota situacional)', 'Condition (optional — situational note)'), TextField(
             controller: cond,
             decoration: InputDecoration(
                 labelText: tr('Condição (opcional — vira nota situacional)', 'Condition (optional — situational note)')),
-          ),
+          )),
         ]),
       ),
       actions: [

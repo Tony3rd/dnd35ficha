@@ -6,6 +6,7 @@ import '../engine/bonus.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'effect_editor.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 /// Magias e efeitos comuns prontos para ligar.
@@ -89,11 +90,11 @@ class EffectsTab extends StatelessWidget {
         ),
       Align(
         alignment: Alignment.centerLeft,
-        child: TextButton.icon(
+        child: withHelp(tr('Efeito personalizado', 'Custom effect'), TextButton.icon(
           icon: const Icon(Icons.add),
           label: Text(tr('Efeito personalizado', 'Custom effect')),
           onPressed: () => _editBuff(context, c, null),
-        ),
+        )),
       ),
       SectionTitle(tr('Dano e dreno de atributo, níveis negativos', 'Ability damage/drain, negative levels')),
       Card(
@@ -140,7 +141,7 @@ class EffectsTab extends StatelessWidget {
         ),
       Align(
         alignment: Alignment.centerLeft,
-        child: TextButton.icon(
+        child: withHelp(tr('Recurso (usos por dia, cargas…)', 'Resource (uses/day, charges…)'), TextButton.icon(
           icon: const Icon(Icons.add),
           label: Text(tr('Recurso (usos por dia, cargas…)', 'Resource (uses/day, charges…)')),
           onPressed: () async {
@@ -150,7 +151,7 @@ class EffectsTab extends StatelessWidget {
             if (m == null) return;
             c.update((x) => x.customResources.add(CustomResource(name: n, max: m)));
           },
-        ),
+        )),
       ),
       const SizedBox(height: 60),
     ]);
@@ -196,8 +197,8 @@ class _BuffDialogState extends State<_BuffDialog> {
         width: 520,
         child: SingleChildScrollView(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TextField(controller: name, decoration: InputDecoration(labelText: tr('Nome', 'Name'))),
-            TextField(controller: rounds, decoration: InputDecoration(labelText: tr('Rodadas restantes (vazio = indefinido)', 'Rounds left (empty = untracked)'))),
+            withHelp(tr('Nome', 'Name'), TextField(controller: name, decoration: InputDecoration(labelText: tr('Nome', 'Name')))),
+            withHelp(tr('Rodadas restantes (vazio = indefinido)', 'Rounds left (empty = untracked)'), TextField(controller: rounds, decoration: InputDecoration(labelText: tr('Rodadas restantes (vazio = indefinido)', 'Rounds left (empty = untracked)')))),
             const SizedBox(height: 8),
             EffectListEditor(effects: effects, skillIds: widget.skillIds, onChanged: (l) => setState(() => effects = l)),
           ]),

@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../i18n.dart';
 import 'books_selector.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -30,23 +31,23 @@ class SettingsScreen extends StatelessWidget {
               app.saveSettings();
             },
           ),
-          FilterChip(
+          withHelp(tr('Tema escuro', 'Dark theme'), FilterChip(
             label: Text(tr('Tema escuro', 'Dark theme')),
             selected: st.darkMode,
             onSelected: (v) {
               st.darkMode = v;
               app.saveSettings();
             },
-          ),
+          )),
         ]),
         SectionTitle(tr('Padrões para novas fichas', 'Defaults for new characters')),
         Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
           Text(tr('PV por nível', 'HP per level')),
           SegmentedButton<String>(
             segments: [
-              ButtonSegment(value: 'average', label: Text(tr('Média', 'Average'))),
-              ButtonSegment(value: 'max', label: Text(tr('Máximo', 'Max'))),
-              ButtonSegment(value: 'roll', label: Text(tr('Rolar', 'Roll'))),
+              ButtonSegment(value: 'average', label: Text(tr('Média', 'Average')), tooltip: fieldHelp(tr('Média', 'Average'))),
+              ButtonSegment(value: 'max', label: Text(tr('Máximo', 'Max')), tooltip: fieldHelp(tr('Máximo', 'Max'))),
+              ButtonSegment(value: 'roll', label: Text(tr('Rolar', 'Roll')), tooltip: fieldHelp(tr('Rolar', 'Roll'))),
             ],
             selected: {st.hpMethod},
             onSelectionChanged: (v) {

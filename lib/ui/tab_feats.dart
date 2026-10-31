@@ -6,6 +6,7 @@ import '../i18n.dart';
 import '../model/character.dart';
 import 'feat_picker.dart';
 import 'homebrew_inline.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class FeatsTab extends StatelessWidget {
@@ -60,7 +61,7 @@ class FeatsTab extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Padding(
             padding: const EdgeInsets.all(6),
-            child: FilledButton.tonalIcon(
+            child: withHelp(tr('Adicionar talento', 'Add feat'), FilledButton.tonalIcon(
               icon: const Icon(Icons.add),
               label: Text(tr('Adicionar talento', 'Add feat')),
               onPressed: () async {
@@ -71,7 +72,7 @@ class FeatsTab extends StatelessWidget {
                 final fp = await pickFeat(context, ch, s, slot: slot);
                 if (fp != null) c.update((x) => x.levels[lvl - 1].feats.add(fp));
               },
-            ),
+            )),
           ),
         ),
       if (ch.levels.isNotEmpty)

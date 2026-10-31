@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../app_state.dart';
 import '../i18n.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class SkillsTab extends StatefulWidget {
@@ -63,7 +64,7 @@ class _SkillsTabState extends State<SkillsTab> {
               onChanged: (v) => setState(() => filter = v),
             ),
           ),
-          FilterChip(label: Text(tr('Só com graduações', 'Ranked only')), selected: onlyRanked, onSelected: (v) => setState(() => onlyRanked = v)),
+          withHelp(tr('Só com graduações', 'Ranked only'), FilterChip(label: Text(tr('Só com graduações', 'Ranked only')), selected: onlyRanked, onSelected: (v) => setState(() => onlyRanked = v))),
           Tooltip(
             message: tr('Perícias de classe de qualquer uma das suas classes: custam 1 ponto por graduação e o máximo é nível + 3.',
                 'Class skills of any of your classes: 1 point per rank, max level + 3.'),
@@ -90,7 +91,7 @@ class _SkillsTabState extends State<SkillsTab> {
             child: Text('${tr('Pontos', 'Points')}: $spentFmt / ${s.skillPointsTotal}'),
           ),
           if (s.armorCheck != 0) Text('${tr('Penalidade de armadura', 'Armor check')}: ${s.armorCheck}'),
-          OutlinedButton.icon(
+          withHelp(tr('Ofício/Atuação/Profissão…', 'Craft/Perform/Profession…'), OutlinedButton.icon(
             icon: const Icon(Icons.add),
             label: Text(tr('Ofício/Atuação/Profissão…', 'Craft/Perform/Profession…')),
             onPressed: lastLevel == null
@@ -109,7 +110,7 @@ class _SkillsTabState extends State<SkillsTab> {
                     if (sub == null || sub.trim().isEmpty) return;
                     c.update((x) => x.levels.last.skillRanks.putIfAbsent('$base:${sub.trim()}', () => 0));
                   },
-          ),
+          )),
         ]),
       ),
       if (lastLevel != null)
@@ -146,7 +147,7 @@ class _SkillsTabState extends State<SkillsTab> {
                   ),
                 ),
                 title: Row(children: [
-                  Flexible(child: Text(k.label, style: TextStyle(fontWeight: k.classSkill ? FontWeight.w600 : null))),
+                  Flexible(child: withHelp(k.label, help: skillHelp(k.key), Text(k.label, style: TextStyle(fontWeight: k.classSkill ? FontWeight.w600 : null)))),
                   if (k.def.trainedOnly)
                     Tooltip(message: tr('Só pode ser usada com graduações (treinada).', 'Trained only.'), child: const Text('  ✱', style: TextStyle(fontSize: 11))),
                   if (k.classSkill)

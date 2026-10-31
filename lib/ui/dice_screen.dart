@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../engine/dice.dart';
 import '../i18n.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class DiceScreen extends StatefulWidget {
@@ -37,7 +38,7 @@ class _DiceScreenState extends State<DiceScreen> {
       body: ListView(padding: const EdgeInsets.all(12), children: [
         Row(children: [
           Expanded(
-            child: TextField(
+            child: withHelp(tr('Expressão', 'Expression'), TextField(
               controller: ctl,
               decoration: InputDecoration(
                 labelText: tr('Expressão', 'Expression'),
@@ -45,10 +46,10 @@ class _DiceScreenState extends State<DiceScreen> {
                 errorText: err,
               ),
               onSubmitted: (v) => _roll(app, v),
-            ),
+            )),
           ),
           const SizedBox(width: 8),
-          FilledButton.icon(onPressed: () => _roll(app, ctl.text), icon: const Icon(Icons.casino), label: Text(tr('Rolar', 'Roll'))),
+          withHelp(tr('Rolar', 'Roll'), FilledButton.icon(onPressed: () => _roll(app, ctl.text), icon: const Icon(Icons.casino), label: Text(tr('Rolar', 'Roll')))),
         ]),
         const SizedBox(height: 12),
         Row(children: [

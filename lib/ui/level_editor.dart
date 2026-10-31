@@ -10,6 +10,7 @@ import '../engine/defs.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'feat_picker.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 /// Catálogo de classes: núcleo + estruturadas + entradas de texto da base.
@@ -144,7 +145,7 @@ class _ClassConfigDialogState extends State<_ClassConfigDialog> {
               Text(tr('Resistências boas', 'Good saves')),
               for (final k in ['fort', 'ref', 'will'])
                 FilterChip(label: Text(saveName(k)), selected: good.contains(k), onSelected: (v) => setState(() => v ? good.add(k) : good.remove(k))),
-              FilterChip(label: Text(tr('Classe de prestígio', 'Prestige class')), selected: prestige, onSelected: (v) => setState(() => prestige = v)),
+              withHelp(tr('Classe de prestígio', 'Prestige class'), FilterChip(label: Text(tr('Classe de prestígio', 'Prestige class')), selected: prestige, onSelected: (v) => setState(() => prestige = v))),
               Text(tr('Nível máximo', 'Max level')),
               NumStepper(value: maxLevel, min: 1, max: 40, onChanged: (v) => setState(() => maxLevel = v.toInt())),
             ]),
@@ -303,7 +304,7 @@ class LevelEditor extends StatelessWidget {
       Wrap(spacing: 6, runSpacing: 4, crossAxisAlignment: WrapCrossAlignment.center, children: [
         Text('${tr('Talentos neste nível', 'Feats at this level')}:'),
         for (final f in l.feats) InputChip(label: Text(f.name), onDeleted: () => c.update((x) => x.levels[index].feats.remove(f))),
-        ActionChip(
+        withHelp(tr('talento', 'feat'), ActionChip(
           avatar: const Icon(Icons.add, size: 16),
           label: Text(tr('talento', 'feat')),
           onPressed: () async {
@@ -311,7 +312,7 @@ class LevelEditor extends StatelessWidget {
             final fp = await pickFeat(context, ch, s, slot: slot);
             if (fp != null) c.update((x) => x.levels[index].feats.add(fp));
           },
-        ),
+        )),
         Text(_slotHint(s, ch, index), style: Theme.of(context).textTheme.bodySmall),
       ]),
     ]);
@@ -354,6 +355,7 @@ class _SkillRankChip extends StatelessWidget {
     final scheme = Theme.of(context).colorScheme;
     return Tooltip(
       message: [
+        if (skillHelp(line.key) != null) skillHelp(line.key)!,
         classSkill ? tr('Perícia de classe: 1 ponto por graduação.', 'Class skill: 1 point per rank.') : tr('Perícia de outra classe: 2 pontos por graduação.', 'Cross-class: 2 points per rank.'),
         if (racial != null) '${tr('Bônus racial', 'Racial bonus')}: $racial',
       ].join('\n'),

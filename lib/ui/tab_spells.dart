@@ -7,6 +7,7 @@ import '../engine/calc.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'homebrew_inline.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class SpellsTab extends StatelessWidget {
@@ -114,13 +115,13 @@ class _CasterCard extends StatelessWidget {
             Wrap(spacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
               Text('${tr('Domínios', 'Domains')}:'),
               for (final d in st.domains) InputChip(label: Text(d), onDeleted: () => edit((cs) => cs.domains.remove(d))),
-              ActionChip(
+              withHelp(tr('+ domínio', '+ domain'), ActionChip(
                 label: Text(tr('+ domínio', '+ domain')),
                 onPressed: () async {
                   final d = await promptText(context, tr('Domínio (como na lista de magias, ex.: Fire, Good)', 'Domain (as in spell lists, e.g. Fire, Good)'));
                   if (d != null && d.trim().isNotEmpty) edit((cs) => cs.domains.add(d.trim()));
                 },
-              ),
+              )),
             ]),
           if (sc.spellbook)
             Wrap(spacing: 6, crossAxisAlignment: WrapCrossAlignment.center, children: [
@@ -219,13 +220,13 @@ class _LevelBlock extends StatelessWidget {
                 onDeleted: () => edit((cs) => cs.prepared.remove(cs.prepared.firstWhere((x) => x.name == p.name && x.level == p.level))),
               ),
             if (known.isEmpty)
-              ActionChip(
+              withHelp(tr('preparar (texto livre)', 'prepare (free text)'), ActionChip(
                 label: Text(tr('preparar (texto livre)', 'prepare (free text)')),
                 onPressed: () async {
                   final n = await promptText(context, tr('Magia', 'Spell'));
                   if (n != null && n.isNotEmpty) edit((cs) => cs.prepared.add(PreparedSpell(name: n, level: lv.level)));
                 },
-              ),
+              )),
           ]),
         ],
       ]),

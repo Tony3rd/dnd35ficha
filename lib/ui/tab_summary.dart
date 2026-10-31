@@ -116,12 +116,12 @@ class SummaryTab extends StatelessWidget {
                           }
                         })),
               ]),
-            FilterChip(
+            withHelp(tr('Duas armas', 'Two weapons'), FilterChip(
               label: Text(tr('Duas armas', 'Two weapons')),
               selected: ch.twoWeaponFighting,
               onSelected: (v) => c.update((x) => x.twoWeaponFighting = v),
-            ),
-            FilterChip(
+            )),
+            withHelp(tr('Lutar na defensiva (+2 CA)', 'Fight defensively (+2 AC)'), FilterChip(
               label: Text(tr('Lutar na defensiva (+2 CA)', 'Fight defensively (+2 AC)')),
               selected: ch.fightingDefensively,
               onSelected: (v) => c.update((x) {
@@ -129,7 +129,7 @@ class SummaryTab extends StatelessWidget {
                 x.customEffects.removeWhere((e) => e.source == '#defensive');
                 if (v) x.customEffects.add(Effect(target: 'ac', value: '2', type: BonusType.dodge, source: '#defensive'));
               }),
-            ),
+            )),
           ]),
         ),
       ),
@@ -281,8 +281,8 @@ class _HpCard extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Wrap(spacing: 8, runSpacing: 6, children: [
-            FilledButton.icon(onPressed: () => apply('dmg'), icon: const Icon(Icons.heart_broken_outlined), label: Text(tr('Dano', 'Damage'))),
-            FilledButton.tonalIcon(onPressed: () => apply('heal'), icon: const Icon(Icons.healing), label: Text(tr('Curar', 'Heal'))),
+            withHelp(tr('Dano', 'Damage'), FilledButton.icon(onPressed: () => apply('dmg'), icon: const Icon(Icons.heart_broken_outlined), label: Text(tr('Dano', 'Damage')))),
+            withHelp(tr('Curar', 'Heal'), FilledButton.tonalIcon(onPressed: () => apply('heal'), icon: const Icon(Icons.healing), label: Text(tr('Curar', 'Heal')))),
             OutlinedButton(onPressed: () => apply('temp'), child: Text(tr('PV temp.', 'Temp HP'))),
             OutlinedButton(onPressed: () => apply('nl'), child: Text(tr('Não letal', 'Nonlethal'))),
             if (ch.damage > 0 || ch.tempHp > 0 || ch.nonlethal > 0)

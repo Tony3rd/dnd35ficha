@@ -113,14 +113,14 @@ Future<HomebrewBook?> editBookInfo(BuildContext context, HomebrewBook? b) {
       content: SizedBox(
         width: 480,
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          TextField(controller: title, decoration: InputDecoration(labelText: tr('Título', 'Title'))),
-          TextField(
+          withHelp(tr('Título', 'Title'), TextField(controller: title, decoration: InputDecoration(labelText: tr('Título', 'Title')))),
+          withHelp(tr('Abreviação (usada como fonte, ex.: HB-Ana)', 'Abbreviation (used as source, e.g. HB-Ana)'), TextField(
               controller: id,
               enabled: b == null,
-              decoration: InputDecoration(labelText: tr('Abreviação (usada como fonte, ex.: HB-Ana)', 'Abbreviation (used as source, e.g. HB-Ana)'))),
-          TextField(controller: author, decoration: InputDecoration(labelText: tr('Autor', 'Author'))),
-          TextField(controller: ver, decoration: InputDecoration(labelText: tr('Versão', 'Version'))),
-          TextField(controller: desc, maxLines: 3, decoration: InputDecoration(labelText: tr('Descrição', 'Description'))),
+              decoration: InputDecoration(labelText: tr('Abreviação (usada como fonte, ex.: HB-Ana)', 'Abbreviation (used as source, e.g. HB-Ana)')))),
+          withHelp(tr('Autor', 'Author'), TextField(controller: author, decoration: InputDecoration(labelText: tr('Autor', 'Author')))),
+          withHelp(tr('Versão', 'Version'), TextField(controller: ver, decoration: InputDecoration(labelText: tr('Versão', 'Version')))),
+          withHelp(tr('Descrição', 'Description'), TextField(controller: desc, maxLines: 3, decoration: InputDecoration(labelText: tr('Descrição', 'Description')))),
         ]),
       ),
       actions: [
@@ -312,7 +312,7 @@ class _EntryEditorState extends State<EntryEditor> {
       appBar: AppBar(
         title: Text(e.name.isEmpty ? tr('Nova entrada', 'New entry') : e.name),
         actions: [
-          FilledButton.icon(
+          withHelp(tr('Salvar', 'Save'), FilledButton.icon(
             icon: const Icon(Icons.check),
             label: Text(tr('Salvar', 'Save')),
             onPressed: () {
@@ -323,30 +323,30 @@ class _EntryEditorState extends State<EntryEditor> {
               }
               Navigator.pop(context, _build(name));
             },
-          ),
+          )),
           const SizedBox(width: 8),
         ],
       ),
       body: ListView(padding: const EdgeInsets.all(12), children: [
         Wrap(spacing: 12, runSpacing: 10, crossAxisAlignment: WrapCrossAlignment.center, children: [
-          SizedBox(width: 320, child: TextField(controller: ctl.putIfAbsent('name', () => TextEditingController(text: e.name)), decoration: InputDecoration(labelText: tr('Nome', 'Name')))),
+          SizedBox(width: 320, child: withHelp(tr('Nome', 'Name'), TextField(controller: ctl.putIfAbsent('name', () => TextEditingController(text: e.name)), decoration: InputDecoration(labelText: tr('Nome', 'Name'))))),
           DropdownButton<String>(
             value: kinds.contains(kind) ? kind : 'rule',
             items: [for (final k in kinds) DropdownMenuItem(value: k, child: Text(kindName(k)))],
             onChanged: (v) => setState(() => kind = v ?? 'rule'),
           ),
-          SizedBox(width: 90, child: TextField(controller: ctl.putIfAbsent('page', () => TextEditingController(text: e.page?.toString() ?? '')), decoration: InputDecoration(labelText: tr('Página', 'Page')))),
+          SizedBox(width: 90, child: withHelp(tr('Página', 'Page'), TextField(controller: ctl.putIfAbsent('page', () => TextEditingController(text: e.page?.toString() ?? '')), decoration: InputDecoration(labelText: tr('Página', 'Page'))))),
           if (kind == 'feat' || kind == 'race' || kind == 'class' || kind == 'prestige' || kind == 'weapon' || kind == 'armor')
             field('name_pt', tr('Nome em português (opcional)', 'Portuguese name (optional)'), w: 260),
         ]),
         const SizedBox(height: 10),
-        TextField(controller: ctl.putIfAbsent('summary', () => TextEditingController(text: e.summary)), decoration: InputDecoration(labelText: tr('Resumo (uma linha)', 'Summary (one line)'))),
+        withHelp(tr('Resumo (uma linha)', 'Summary (one line)'), TextField(controller: ctl.putIfAbsent('summary', () => TextEditingController(text: e.summary)), decoration: InputDecoration(labelText: tr('Resumo (uma linha)', 'Summary (one line)')))),
         const SizedBox(height: 10),
-        TextField(
+        withHelp(tr('Texto completo', 'Full text'), TextField(
             controller: ctl.putIfAbsent('body', () => TextEditingController(text: e.body)),
             minLines: 5,
             maxLines: 20,
-            decoration: InputDecoration(labelText: tr('Texto completo', 'Full text'), alignLabelWithHint: true)),
+            decoration: InputDecoration(labelText: tr('Texto completo', 'Full text'), alignLabelWithHint: true))),
         SectionTitle(tr('Regras (usadas nos cálculos)', 'Rules (used in calculations)')),
         ..._kindFields(),
         if (kind != 'spell' && kind != 'weapon' && kind != 'armor') ...[
@@ -377,7 +377,7 @@ class _EntryEditorState extends State<EntryEditor> {
               ],
               onChanged: (v) => setState(() => data['choice'] = (v == null || v.isEmpty) ? null : v),
             ),
-            FilterChip(label: Text(tr('Pode repetir', 'Can repeat')), selected: data['multiple'] == true, onSelected: (v) => setState(() => data['multiple'] = v)),
+            withHelp(tr('Pode repetir', 'Can repeat'), FilterChip(label: Text(tr('Pode repetir', 'Can repeat')), selected: data['multiple'] == true, onSelected: (v) => setState(() => data['multiple'] = v))),
           ]),
           Text(tr('Dica: use {choice} no alvo do modificador (ex.: attack.weapon:{choice}).', 'Tip: use {choice} in the modifier target (e.g. attack.weapon:{choice}).'),
               style: Theme.of(context).textTheme.bodySmall),
@@ -510,7 +510,7 @@ class _EntryEditorState extends State<EntryEditor> {
             field('weight', tr('Peso (lb)', 'Weight (lb)'), w: 100, init: '0'),
             field('cost', tr('Custo (po)', 'Cost (gp)'), w: 100, init: '0'),
             field('dtype', tr('Tipo (P/S/B)', 'Type (P/S/B)'), w: 100),
-            FilterChip(label: Text(tr('Acuidade', 'Finesse')), selected: data['finesse'] == true, onSelected: (v) => setState(() => data['finesse'] = v)),
+            withHelp(tr('Acuidade', 'Finesse'), FilterChip(label: Text(tr('Acuidade', 'Finesse')), selected: data['finesse'] == true, onSelected: (v) => setState(() => data['finesse'] = v))),
           ]),
         ];
       case 'armor':

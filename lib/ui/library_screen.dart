@@ -5,6 +5,7 @@ import '../app_state.dart';
 import '../data/homebrew.dart';
 import '../data/library.dart';
 import '../i18n.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class LibraryScreen extends StatelessWidget {
@@ -67,9 +68,9 @@ class _SearchViewState extends State<_SearchView> {
       SizedBox(
         height: 40,
         child: ListView(scrollDirection: Axis.horizontal, padding: const EdgeInsets.symmetric(horizontal: 8), children: [
-          FilterChip(label: Text(tr('Texto das páginas', 'Page full text')), selected: fullText, onSelected: (v) => setState(() => fullText = v)),
+          withHelp(tr('Texto das páginas', 'Page full text'), FilterChip(label: Text(tr('Texto das páginas', 'Page full text')), selected: fullText, onSelected: (v) => setState(() => fullText = v))),
           const SizedBox(width: 6),
-          FilterChip(label: Text(tr('Agrupar versões', 'Group versions')), selected: grouped, onSelected: (v) => setState(() => grouped = v)),
+          withHelp(tr('Agrupar versões', 'Group versions'), FilterChip(label: Text(tr('Agrupar versões', 'Group versions')), selected: grouped, onSelected: (v) => setState(() => grouped = v))),
           const SizedBox(width: 6),
           ActionChip(
             avatar: const Icon(Icons.filter_list, size: 16),
@@ -271,7 +272,7 @@ class _BookContentsScreenState extends State<BookContentsScreen> {
             ChoiceChip(label: Text('${tr('Tudo', 'All')} (${counts.values.fold<int>(0, (a, b) => a + b)})'), selected: kind == null, onSelected: (_) => setState(() => kind = null)),
             for (final e in counts.entries)
               ChoiceChip(label: Text('${kindName(e.key)} (${e.value})'), selected: kind == e.key, onSelected: (_) => setState(() => kind = e.key)),
-            FilterChip(label: Text(tr('Ordenar por página', 'Sort by page')), selected: byPage, onSelected: (v) => setState(() => byPage = v)),
+            withHelp(tr('Ordenar por página', 'Sort by page'), FilterChip(label: Text(tr('Ordenar por página', 'Sort by page')), selected: byPage, onSelected: (v) => setState(() => byPage = v))),
           ]),
         ),
         Padding(
