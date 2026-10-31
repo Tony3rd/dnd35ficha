@@ -11,6 +11,7 @@ import '../engine/bonus.dart';
 import '../engine/defs.dart';
 import '../i18n.dart';
 import 'effect_editor.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class HomebrewScreen extends StatelessWidget {
@@ -252,7 +253,7 @@ class _EntryEditorState extends State<EntryEditor> {
       width: w,
       child: TextField(controller: t(k, init), maxLines: lines, decoration: InputDecoration(labelText: label)),
     );
-    return help.isEmpty ? f : Tooltip(message: help, waitDuration: const Duration(milliseconds: 400), child: f);
+    return withHelp(label, f, help: help.isEmpty ? null : help);
   }
 
   /// Substitui as regras pelas de uma raça/classe existente ("baseada em").

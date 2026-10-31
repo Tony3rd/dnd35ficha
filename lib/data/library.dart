@@ -185,28 +185,35 @@ class Library {
   }
 
   /// Busca por nome/termos em todas as entradas (FTS5), com filtros.
-  List<LibEntry> search(String query, {Set<String>? kinds, Set<String>? books, int limit = 300}) {
+  List<LibEntry> search(String query, {Set<String>? kinds, Set<String>? books, int limit = 300, bool fullText = true}) {
     final out = <LibEntry>[];
     final db = _db;
     final q = query.trim();
+    // consultas curtas: só pelo começo do nome (rápido); evita varrer o texto inteiro
+    final short = q.isNotEmpty && q.length < 3;
     if (db != null) {
       final params = <Object?>[];
       final where = <String>[];
       String sql;
-      if (q.isEmpty) {
+      if (q.isEmpty || short) {
         sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary,$_ptCols FROM entries e';
+        if (short) {
+          where.add(_hasPt ? '(e.name LIKE ? OR e.name_pt LIKE ?)' : 'e.name LIKE ?');
+          params.add('$q%');
+          if (_hasPt) params.add('$q%');
+        }
       } else {
         sql = 'SELECT e.id,e.kind,e.name,e.book,e.page,e.summary,$_ptCols FROM entries_fts f JOIN entries e ON e.id=f.rowid';
         where.add('entries_fts MATCH ?');
-        params.add(_fts(q));
+        params.add(fullText ? _fts(q) : '{${_hasPt ? 'name name_pt summary summary_pt' : 'name summary'}} : (${_fts(q)})');
       }
       if (kinds != null && kinds.isNotEmpty) where.add(_inList('e.kind', kinds, params));
       if (books != null && books.isNotEmpty) where.add(_inList('e.book', books, params));
       if (where.isNotEmpty) sql += ' WHERE ${where.join(' AND ')}';
-      sql += q.isEmpty ? ' ORDER BY e.name' : (_hasPt
+      sql += (q.isEmpty || short) ? ' ORDER BY e.name' : (_hasPt
           ? ' ORDER BY (lower(e.name)=lower(?) OR lower(e.name_pt)=lower(?)) DESC, bm25(entries_fts, 10.0, 2.0, 1.0, 10.0, 2.0, 1.0)'
           : ' ORDER BY (lower(e.name)=lower(?)) DESC, bm25(entries_fts, 10.0, 2.0, 1.0)');
-      if (q.isNotEmpty) {
+      if (q.isNotEmpty && !short) {
         params.add(q);
         if (_hasPt) params.add(q);
       }

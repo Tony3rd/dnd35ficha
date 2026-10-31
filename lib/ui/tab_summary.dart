@@ -9,6 +9,7 @@ import '../engine/calc.dart';
 import '../engine/expr.dart';
 import '../i18n.dart';
 import '../model/character.dart';
+import 'help.dart';
 import 'widgets.dart';
 
 class SummaryTab extends StatelessWidget {
@@ -253,7 +254,7 @@ class _HpCard extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Row(children: [
-            Text(tr('Pontos de vida', 'Hit points'), style: Theme.of(context).textTheme.titleMedium),
+            withHelp(tr('Pontos de vida', 'Hit points'), Text(tr('Pontos de vida', 'Hit points'), style: Theme.of(context).textTheme.titleMedium)),
             const Spacer(),
             if (stateLabel.isNotEmpty)
               Container(

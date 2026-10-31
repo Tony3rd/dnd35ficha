@@ -44,7 +44,16 @@ class LibEntry {
   })  : uid = uid ?? newId(),
         data = data ?? {};
 
-  String get key => '$kind:${slugify(name)}';
+  String? _key, _keyOf;
+  /// Chave kind:slug (em cache: é usada em laços grandes nas listas de escolha).
+  String get key {
+    final of = '$kind\u0001$name';
+    if (_keyOf != of) {
+      _keyOf = of;
+      _key = '$kind:${slugify(name)}';
+    }
+    return _key!;
+  }
 
   /// Nome para exibição: em português com o original entre parênteses.
   String get label => Lang.isPt && namePt.isNotEmpty && namePt != name ? '$namePt ($name)' : name;

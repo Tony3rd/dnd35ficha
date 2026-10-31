@@ -8,6 +8,7 @@ import '../engine/defs.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'effect_editor.dart';
+import 'help.dart';
 import 'homebrew_inline.dart';
 import 'widgets.dart';
 
@@ -249,7 +250,7 @@ class _ItemDialogState extends State<_ItemDialog> {
   Widget build(BuildContext context) {
     final app = context.read<AppState>();
     Widget tf(String k, String label, String v, {double w = 140}) =>
-        SizedBox(width: w, child: TextField(controller: f(k, v), decoration: InputDecoration(labelText: label)));
+        withHelp(label, SizedBox(width: w, child: TextField(controller: f(k, v), decoration: InputDecoration(labelText: label))));
     return AlertDialog(
       title: Text(tr('Item', 'Item')),
       content: SizedBox(

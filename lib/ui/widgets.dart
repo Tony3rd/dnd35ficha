@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,7 @@ import '../app_state.dart';
 import '../data/homebrew.dart';
 import '../engine/dice.dart';
 import '../i18n.dart';
+import 'help.dart';
 
 String sgn(int v) => v >= 0 ? '+$v' : '$v';
 
@@ -81,13 +84,14 @@ class StatBox extends StatelessWidget {
   final VoidCallback? onLongPress;
   final double width;
   final Color? color;
+  final String? help;
   const StatBox(this.label, this.value,
-      {super.key, this.sub, this.onTap, this.onLongPress, this.width = 92, this.color});
+      {super.key, this.sub, this.onTap, this.onLongPress, this.width = 92, this.color, this.help});
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context);
-    return SizedBox(
+    return withHelp(label, help: help, SizedBox(
       width: width,
       child: Card(
         child: InkWell(
@@ -108,7 +112,7 @@ class StatBox extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ));
   }
 }
 
@@ -122,8 +126,10 @@ class SectionTitle extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 14, 8, 4),
       child: Row(children: [
-        Text(text.toUpperCase(),
-            style: t.textTheme.titleSmall?.copyWith(letterSpacing: 1.4, color: t.colorScheme.secondary, fontWeight: FontWeight.w700)),
+        withHelp(
+            text,
+            Text(text.toUpperCase(),
+                style: t.textTheme.titleSmall?.copyWith(letterSpacing: 1.4, color: t.colorScheme.secondary, fontWeight: FontWeight.w700))),
         const SizedBox(width: 8),
         const Expanded(child: Divider()),
         if (trailing != null) trailing!,
@@ -303,25 +309,61 @@ class _PickEntryDialog extends StatefulWidget {
 
 class _PickEntryDialogState extends State<_PickEntryDialog> {
   String q = '';
+  Timer? _debounce;
+  List<LibEntry> _unique = const [];
+  Map<String, int> _versions = const {};
+  /// Texto de busca já em minúsculas, calculado uma vez para listas fixas.
+  late final List<String>? _hay = widget.fixed
+      ?.map((e) => '${e.name}\u0001${e.namePt}\u0001${e.summary}\u0001${e.summaryPt}'.toLowerCase())
+      .toList();
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    _run();
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _onChanged(String v) {
+    q = v;
+    _debounce?.cancel();
+    // espera o usuário parar de digitar antes de consultar a base
+    _debounce = Timer(Duration(milliseconds: widget.fixed != null ? 90 : 220), () {
+      if (mounted) setState(_run);
+    });
+  }
+
+  void _run() {
     final app = context.read<AppState>();
     List<LibEntry> items;
     if (widget.fixed != null) {
-      final ql = q.toLowerCase();
-      items = widget.fixed!
-          .where((e) => ql.isEmpty || e.name.toLowerCase().contains(ql) || e.namePt.toLowerCase().contains(ql) ||
-              e.summary.toLowerCase().contains(ql) || e.summaryPt.toLowerCase().contains(ql))
-          .toList();
+      final ql = q.trim().toLowerCase();
+      final f = widget.fixed!;
+      items = ql.isEmpty ? f : [for (var i = 0; i < f.length; i++) if (_hay![i].contains(ql)) f[i]];
     } else {
-      items = app.library.search(q, kinds: widget.kinds, books: widget.books, limit: 200);
+      items = app.library.search(q, kinds: widget.kinds, books: widget.books, limit: 200, fullText: false);
     }
     // agrupa versões pelo nome
-    final seen = <String>{};
+    final counts = <String, int>{};
     final unique = <LibEntry>[];
     for (final e in items) {
-      if (seen.add(e.key)) unique.add(e);
+      final n = counts[e.key];
+      if (n == null) unique.add(e);
+      counts[e.key] = (n ?? 0) + 1;
     }
+    _unique = unique;
+    _versions = counts;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final app = context.read<AppState>();
+    final unique = _unique;
     return AlertDialog(
       title: Text(widget.title),
       content: SizedBox(
@@ -331,7 +373,11 @@ class _PickEntryDialogState extends State<_PickEntryDialog> {
           TextField(
             autofocus: true,
             decoration: InputDecoration(prefixIcon: const Icon(Icons.search), hintText: tr('Buscar…', 'Search…')),
-            onChanged: (v) => setState(() => q = v),
+            onChanged: _onChanged,
+            onSubmitted: (_) {
+              _debounce?.cancel();
+              setState(_run);
+            },
           ),
           const SizedBox(height: 8),
           Expanded(
@@ -341,18 +387,26 @@ class _PickEntryDialogState extends State<_PickEntryDialog> {
                     : tr('Base de dados não encontrada (data/rules.sqlite).', 'Database not found (data/rules.sqlite).')))
                 : ListView.builder(
                     itemCount: unique.length,
+                    itemExtent: 56,
                     itemBuilder: (c, i) {
                       final e = unique[i];
-                      final n = items.where((x) => x.key == e.key).length;
-                      return ListTile(
+                      final n = _versions[e.key] ?? 1;
+                      final summary = e.shownSummary;
+                      final tile = ListTile(
                         dense: true,
-                        title: Text(e.label),
+                        title: Text(e.label, maxLines: 1, overflow: TextOverflow.ellipsis),
                         subtitle: Text('${e.sourceLabel}${n > 1 ? tr(' · +${n - 1} versão(ões)', ' · +${n - 1} version(s)') : ''}'
-                            '${e.shownSummary.isNotEmpty ? ' — ${e.shownSummary}' : ''}',
+                            '${summary.isNotEmpty ? ' — $summary' : ''}',
                             maxLines: 2, overflow: TextOverflow.ellipsis),
-                        trailing: IconButton(icon: const Icon(Icons.info_outline), onPressed: () => showEntry(context, e)),
+                        trailing: IconButton(
+                            tooltip: tr('Ver o texto completo', 'Show full text'),
+                            icon: const Icon(Icons.info_outline),
+                            onPressed: () => showEntry(context, e)),
                         onTap: () => Navigator.pop(context, e),
                       );
+                      return summary.length > 60
+                          ? Tooltip(message: summary, waitDuration: const Duration(milliseconds: 600), child: tile)
+                          : tile;
                     }),
           ),
         ]),

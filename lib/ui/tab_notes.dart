@@ -5,6 +5,7 @@ import '../app_state.dart';
 import '../i18n.dart';
 import '../model/character.dart';
 import 'books_selector.dart';
+import 'help.dart';
 import 'portrait.dart';
 import 'widgets.dart';
 
@@ -33,7 +34,7 @@ class IdentityFields extends StatelessWidget {
           onChanged: (t) => update((x) => set(x, t)),
         ),
       );
-      return help.isEmpty ? w0 : Tooltip(message: help, waitDuration: const Duration(milliseconds: 400), child: w0);
+      return withHelp(label, w0, help: help.isEmpty ? null : help);
     }
     return Wrap(spacing: 10, runSpacing: 10, crossAxisAlignment: WrapCrossAlignment.center, children: [
       f(tr('Nome do personagem', 'Character name'), ch.name, (x, t) => x.name = t, w: 300),
@@ -67,7 +68,7 @@ class NotesTab extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.watch<CharacterController>();
     final ch = c.ch;
-    Widget area(String label, String v, void Function(Character, String) set) => Padding(
+    Widget area(String label, String v, void Function(Character, String) set) => withHelp(label, Padding(
           padding: const EdgeInsets.symmetric(vertical: 6),
           child: TextFormField(
             initialValue: v,
@@ -76,7 +77,7 @@ class NotesTab extends StatelessWidget {
             decoration: InputDecoration(labelText: label, alignLabelWithHint: true),
             onChanged: (t) => c.update((x) => set(x, t)),
           ),
-        );
+        ));
     return ListView(padding: const EdgeInsets.all(12), children: [
       SectionTitle(tr('Identidade', 'Identity')),
       Wrap(spacing: 16, runSpacing: 12, crossAxisAlignment: WrapCrossAlignment.start, children: [

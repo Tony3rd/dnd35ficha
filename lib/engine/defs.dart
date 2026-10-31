@@ -3,20 +3,28 @@
 // extraída dos livros (campo data_json) e dos livros homebrew do usuário.
 import 'bonus.dart';
 
+final _slugCache = <String, String>{};
+final _reQuote = RegExp(r"[’']");
+final _reNonAlnum = RegExp(r'[^a-z0-9]+');
+final _reEdges = RegExp(r'^-+|-+$');
+
+/// Identificador estável a partir de um nome (sem acentos, minúsculo, com hífens).
+/// Memorizado: é chamado muitas vezes por segundo nas listas e no cálculo da ficha.
 String slugify(String s) {
+  final hit = _slugCache[s];
+  if (hit != null) return hit;
   const from = 'áàâãäéèêëíìîïóòôõöúùûüçñÁÀÂÃÄÉÈÊËÍÌÎÏÓÒÔÕÖÚÙÛÜÇÑ';
   const to = 'aaaaaeeeeiiiiooooouuuucnAAAAAEEEEIIIIOOOOOUUUUCN';
   final b = StringBuffer();
-  for (final ch in s.split('')) {
+  for (final r in s.runes) {
+    final ch = String.fromCharCode(r);
     final i = from.indexOf(ch);
     b.write(i >= 0 ? to[i] : ch);
   }
-  return b
-      .toString()
-      .toLowerCase()
-      .replaceAll(RegExp(r"[’']"), '')
-      .replaceAll(RegExp(r'[^a-z0-9]+'), '-')
-      .replaceAll(RegExp(r'^-+|-+$'), '');
+  final out = b.toString().toLowerCase().replaceAll(_reQuote, '').replaceAll(_reNonAlnum, '-').replaceAll(_reEdges, '');
+  if (_slugCache.length > 50000) _slugCache.clear();
+  _slugCache[s] = out;
+  return out;
 }
 
 List<Effect> _effects(dynamic j, String source) => j == null
