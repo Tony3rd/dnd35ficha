@@ -473,6 +473,32 @@ def index_table(path, kind):
                     if parts:
                         name = parts[-1]
                         break
+                if name is None and c < 48:
+                    # fonte abaixo do nome (3+ linhas): o nome é a linha não recuada mais próxima acima
+                    for k in range(i - 1, max(-1, i - 9), -1):
+                        lk = lines[k]
+                        if SRC_RE.search(lk[:48]):
+                            break  # chegou na entrada anterior
+                        if (lk[:1] == ' ' and lk[1:2].isupper()) or lk[:1].isupper():
+                            first = re.split(r'\s{2,}', lk.strip())[0]
+                            if re.match(r"^[A-Z][A-Za-z’',() \-]{1,45}$", first):
+                                name = first
+                                # nome quebrado em várias linhas ("Improved Two-" / "  Weapon Fighting")
+                                for k2 in range(k + 1, min(len(lines), i + 1)):
+                                    l2 = lines[k2]
+                                    if not re.match(r'^  [A-Z]', l2):
+                                        continue
+                                    seg = re.split(r'\s{2,}', l2.strip())[0]
+                                    seg = SRC_RE.sub('', seg).strip()
+                                    if not re.match(r"^[A-Z][A-Za-z’',() \-–]{0,40}$", seg):
+                                        break
+                                    name = name + seg if name.endswith('-') else f'{name} {seg}'
+                            break
+            # frases da coluna de descrição (ex.: "Add the following to one of your…") não são nomes
+            if name and re.match(r"^(Add|The|You|Your|As|When|If|This|These|Each|Gain|See|Use|May|Can|Any|All|With|For|In|On|At|To|Of|Treat|Allows?|Grants?|Able|Make a|Craft a)\b", name):
+                name = None
+            if name and len(name.split()) > 6:
+                name = None
             if name and len(name) > 2:
                 STORE.add(kind, name, norm_src(m.group(1)), int(m.group(2)), origin='index')
 

@@ -420,6 +420,7 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
   int speed = 30, la = 0;
   String favored = 'any', vision = '', languages = '', type = 'humanoid';
   List<Effect> effects = const [];
+  int bonusFeats = 0, bonusSkill = 0;
   RaceDef? base;
   final adj = <String, int>{for (final a in abilityIds) a: 0};
   final feats = TextEditingController();
@@ -442,6 +443,8 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
     languages = r.languages;
     type = r.type;
     effects = List.of(r.effects);
+    bonusFeats = r.bonusFeats;
+    bonusSkill = r.bonusSkillPoints;
     for (final a in abilityIds) {
       adj[a] = r.abilityAdj[a] ?? 0;
     }
@@ -486,6 +489,8 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
                 }),
               ),
             ),
+            const SizedBox(height: 8),
+            Text(tr('Tamanho, deslocamento e ajuste de nível', 'Size, speed and level adjustment'), style: const TextStyle(fontWeight: FontWeight.bold)),
             Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
               _tip(
                 tr('Categoria de tamanho: altera CA, ataque, Esconder-se e carga.', 'Size category: changes AC, attack, Hide and load.'),
@@ -495,28 +500,61 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
                   onChanged: (v) => setState(() => size = v ?? 'medium'),
                 ),
               ),
-              _tip(tr('Deslocamento terrestre básico em pés (30 pés = 9 m).', 'Base land speed in feet.'), Text(tr('Deslocamento', 'Speed'))),
+              _tip(tr('Deslocamento terrestre básico em pés (30 pés = 9 m).', 'Base land speed in feet.'), Text(tr('Deslocamento (pés)', 'Speed (ft)'))),
               NumStepper(value: speed, min: 0, max: 120, step: 5, onChanged: (v) => setState(() => speed = v.toInt())),
-              _tip(tr('Ajuste de nível: somado ao nível para XP e riqueza.', 'Level adjustment: added to level for XP and wealth.'), const Text('LA')),
+              _tip(
+                  tr('Ajuste de nível (LA/NEP): somado ao nível de personagem para calcular XP, riqueza e o nível efetivo. Raças comuns têm 0; drow +2, nagah de Tormenta +1...',
+                      'Level adjustment (LA/ECL): added to character level for XP, wealth and effective level.'),
+                  Text(tr('Ajuste de nível (LA)', 'Level adjustment (LA)'))),
               NumStepper(value: la, min: 0, max: 20, onChanged: (v) => setState(() => la = v.toInt())),
             ]),
-            for (final a in abilityIds)
-              Row(children: [
-                SizedBox(width: 130, child: _tip(tr('Ajuste racial de ${abilityName(a)}.', 'Racial ${abilityName(a)} adjustment.'), Text(abilityName(a)))),
-                NumStepper(value: adj[a]!, min: -10, max: 20, onChanged: (v) => setState(() => adj[a] = v.toInt())),
-              ]),
-            if (effects.isNotEmpty) ...[
-              const SizedBox(height: 6),
-              Text(tr('Bônus raciais copiados', 'Copied racial bonuses'), style: const TextStyle(fontWeight: FontWeight.bold)),
-              Wrap(spacing: 4, runSpacing: 4, children: [
-                for (final e in List.of(effects))
-                  InputChip(
-                    label: Text(describeEffect(e), style: const TextStyle(fontSize: 12)),
-                    tooltip: tr('Clique no × para remover se o livro tirou este bônus.', 'Click × to remove if the book removed this bonus.'),
-                    onDeleted: () => setState(() => effects = List.of(effects)..remove(e)),
-                  ),
-              ]),
-            ],
+            const SizedBox(height: 8),
+            _tip(
+              tr('Ajustes raciais de atributo (ex.: elfo +2 Des, −2 Con). Use + ou − em cada atributo.', 'Racial ability adjustments.'),
+              Text(tr('Ajustes de atributo (bônus de habilidade)', 'Ability adjustments'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            Wrap(spacing: 16, runSpacing: 4, children: [
+              for (final a in abilityIds)
+                SizedBox(
+                  width: 250,
+                  child: Row(children: [
+                    SizedBox(width: 110, child: _tip(tr('Ajuste racial de ${abilityName(a)}.', 'Racial ${abilityName(a)} adjustment.'), Text(abilityName(a)))),
+                    NumStepper(value: adj[a]!, min: -10, max: 20, format: (v) => sgn(v.toInt()), onChanged: (v) => setState(() => adj[a] = v.toInt())),
+                  ]),
+                ),
+            ]),
+            const SizedBox(height: 8),
+            Text(tr('Outros traços numéricos', 'Other numeric traits'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            Wrap(spacing: 12, runSpacing: 8, crossAxisAlignment: WrapCrossAlignment.center, children: [
+              _tip(tr('Talentos adicionais no 1º nível (humano: 1).', 'Extra feats at 1st level (human: 1).'), Text(tr('Talentos extras no 1º', 'Bonus feats at 1st'))),
+              NumStepper(value: bonusFeats, min: 0, max: 5, onChanged: (v) => setState(() => bonusFeats = v.toInt())),
+              _tip(tr('Pontos de perícia extras por nível (×4 no 1º). Humano: 1.', 'Extra skill points per level (×4 at 1st).'), Text(tr('Perícias extras/nível', 'Bonus skill pts/level'))),
+              NumStepper(value: bonusSkill, min: 0, max: 10, onChanged: (v) => setState(() => bonusSkill = v.toInt())),
+              _tip(
+                tr('Classe ignorada na penalidade de XP por multiclasse ("qualquer" = a classe mais alta).', 'Class ignored for multiclass XP penalty.'),
+                DropdownButton<String>(
+                  value: favored == 'any' || app.rules.classById(favored) != null ? favored : 'any',
+                  items: [
+                    DropdownMenuItem(value: 'any', child: Text(tr('Classe favorecida: qualquer', 'Favored class: any'))),
+                    for (final cl in {for (final l in app.rules.classes.values) l.first.id: l.first}.values.where((x) => !x.prestige))
+                      DropdownMenuItem(value: cl.id, child: Text('${tr('Classe favorecida', 'Favored class')}: ${cl.displayName(Lang.isPt)}')),
+                  ],
+                  onChanged: (v) => setState(() => favored = v ?? 'any'),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 8),
+            _tip(
+              tr('Bônus raciais calculados na ficha: perícias (ex.: +2 em Ouvir), resistências (ex.: +2 contra veneno), CA natural, ataque... Remova os que o livro tirou e adicione os novos.',
+                  'Racial bonuses applied to the sheet: skills, saves, natural AC, attack... Remove the ones the book removed and add new ones.'),
+              Text(tr('Bônus raciais (perícias, resistências, CA...)', 'Racial bonuses (skills, saves, AC...)'), style: const TextStyle(fontWeight: FontWeight.bold)),
+            ),
+            EffectListEditor(
+              effects: effects,
+              skillIds: app.rules.skills.keys.toList(),
+              onChanged: (l) => setState(() => effects = l),
+            ),
+            const SizedBox(height: 8),
             _tip(
               tr('Traços sem cálculo automático (visão, imunidades, armas naturais...). Separe por ponto e vírgula.',
                   'Traits without automatic calculation. Separate with semicolons.'),
@@ -543,8 +581,8 @@ class _RaceConfigDialogState extends State<_RaceConfigDialog> {
                 vision: vision,
                 languages: languages,
                 type: type,
-                bonusFeats: base?.bonusFeats ?? 0,
-                bonusSkillPoints: base?.bonusSkillPoints ?? 0,
+                bonusFeats: bonusFeats,
+                bonusSkillPoints: bonusSkill,
                 effects: effects,
                 abilityAdj: {for (final e in adj.entries) if (e.value != 0) e.key: e.value},
                 features: feats.text.split(';').map((e) => e.trim()).where((e) => e.isNotEmpty).toList(),
