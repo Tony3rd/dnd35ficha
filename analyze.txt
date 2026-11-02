@@ -1,0 +1,11 @@
+Analyzing dnd35ficha...                                         
+
+   info • Use interpolation to compose strings and values. Try using string interpolation to build the composite string • lib/engine/defs.dart:380:16 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values. Try using string interpolation to build the composite string • lib/engine/defs.dart:388:16 • prefer_interpolation_to_compose_strings
+   info • Use interpolation to compose strings and values. Try using string interpolation to build the composite string • lib/engine/defs.dart:390:16 • prefer_interpolation_to_compose_strings
+   info • Angle brackets will be interpreted as HTML. Try using backticks around the content with angle brackets, or try replacing `<` with `&lt;` and `>` with `&gt;` • lib/model/character.dart:19:48 • unintended_html_in_doc_comment
+   info • Angle brackets will be interpreted as HTML. Try using backticks around the content with angle brackets, or try replacing `<` with `&lt;` and `>` with `&gt;` • lib/model/character.dart:245:66 • unintended_html_in_doc_comment
+   info • 'onReorder' is deprecated and shouldn't be used. Use the onReorderItem callback instead. The onReorderItem callback adjusts the newIndex parameter for a removed item at the oldIndex. This feature was deprecated after v3.41.0-0.0.pre. Try replacing the use of the deprecated member with the replacement • lib/ui/wizard.dart:736:19 • deprecated_member_use
+
+6 issues found. (ran in 9.7s)
+exit=0

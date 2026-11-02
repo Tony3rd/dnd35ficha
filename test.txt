@@ -1,0 +1,18 @@
+
+::group::✅ Passing tests
+✅ Dados parse e limites
+✅ Fórmulas aritmética e funções
+✅ Empilhamento de bônus mesmo tipo não acumula; esquiva acumula; penalidades acumulam
+✅ Ficha guerreiro humano 1
+✅ Ficha progressão épica (nível 25)
+✅ Ficha armadura limita Destreza e aplica penalidade
+✅ Ficha anão não é desacelerado e halfling é pequeno
+✅ Ficha condições e buffs
+✅ Ficha fúria do bárbaro
+✅ Ficha magias por dia com bônus de atributo
+✅ Ficha talento Weapon Focus e Toughness
+✅ XML ida e volta
+::endgroup::
+
+🎉 12 tests passed.
+exit=0
